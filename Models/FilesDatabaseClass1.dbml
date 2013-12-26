@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="filesDatabase" Class="FilesDatabaseClass1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(local);Initial Catalog=filesDatabase;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="filesDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Categories" Member="Categories">
+    <Type Name="Category">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CatName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Category_FileToCategory" Member="FileToCategories" ThisKey="Id" OtherKey="CatId" Type="FileToCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FileToCategory" Member="FileToCategories">
+    <Type Name="FileToCategory">
+      <Column Name="FileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CatId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Category_FileToCategory" Member="Category" ThisKey="CatId" OtherKey="Id" Type="Category" IsForeignKey="true" />
+      <Association Name="filesTable_FileToCategory" Member="filesTable" ThisKey="FileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.filesTable" Member="filesTables">
+    <Type Name="filesTable">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="fileName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="fileDescription" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="filePath" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="userName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="filesTable_FileToCategory" Member="FileToCategories" ThisKey="id" OtherKey="FileId" Type="FileToCategory" />
+    </Type>
+  </Table>
+</Database>

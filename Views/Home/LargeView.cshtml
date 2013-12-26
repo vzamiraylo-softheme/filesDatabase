@@ -1,0 +1,21 @@
+﻿
+@model List<filesDatabase.Models.userFile>
+
+@{
+    ViewBag.Title = "LargeView";
+}
+
+@foreach (var file in Model)
+{ 
+    
+<h2>@Html.DisplayFor(model => file.file.fileName)</h2>
+<h4>@Html.DisplayFor(model => file.file.fileDescription)</h4>
+<img src="@Url.Action("GetImage", "Home" ,new { file.file.id })" class="largeImage" alt="">
+<p class="categoryName">
+    @foreach (var category in file.categoriesForFile)
+    {
+        <h6>@Html.DisplayFor(modelItem => category.CatName)</h6>
+    }
+</p>
+    
+}
