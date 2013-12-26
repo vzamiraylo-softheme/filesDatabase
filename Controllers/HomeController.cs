@@ -27,19 +27,18 @@ namespace filesDatabase.Controllers
             ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
             currentUserId = WebSecurity.CurrentUserId;
             currentUserName = WebSecurity.CurrentUserName;
-
-            dynamic users;
-            using (var db = WebMatrix.Data.Database.Open("DefaultConnection"))
-            {
-                users = db.Query("SELECT* FROM UserProfile");
-            }
-
             
             var files = (from x in _db.filesTables
                          where x.userId == currentUserId
                          select x).ToList();
 
             return View(GenerateUserFileModels(files));
+        }
+
+        [HttpPost]
+        public ActionResult GetUser()
+        {
+            return RedirectToAction("Index");
         }
 
         public List<userFile> GenerateUserFileModels(List<filesTable> files)
