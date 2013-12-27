@@ -37,57 +37,6 @@
         @Html.Partial("_SharedList", Model)
     </div><!--END sharedContent DIV-->
 
-<div id="uploadWrapper" class="modalWindow">
-    
-    <div id="modalHeader">Upload file<span>X</span></div>
-
-     <form id="myForm" action="/Home/AddFile" method="POST">
-    <input type="text" id="fileName" name="fileName" class="form-control" placeholder="Name">
-    <input type="text" id="fileDescription" name="fileDescription" class="form-control" placeholder="Description">
-    <input type="file" id="file" name="files" class="form-control" required value="Select file"/>
-    <input type="text" style="display: none;" id="categories" name="categories"/>
-    <label>Select categories</label><br/>
-    <div class="categoriesList">
-        <ul>
-            
-        </ul>
-    </div>
-        
-    <input type="submit" style="margin-top:100px;" class="btn btn-default pull-right"/>
-    @*<button id="submit" type="button" class="btn btn-default pull-right">Go!</button>*@
-    </form>
-
-</div>
-
-<div id="addNewCatWrapper" class="modalWindow">
-    <div id="modalHeader">Add new category<span>X</span></div>
-    <input type="text" id="catName" name="catName" class="form-control" placeholder="Name">
-    <button id="addNewCatButton" type="button" class="btn btn-default pull-right">Add</button>
-</div>
-
-<div id="newFileCat_wrapper" class="modalWindow">
-    <div id="modalHeader">Add new category<span>X</span></div>
-    <input type="text" style="display: none;" id="categories" name="categories"/>
-    <div class="categoriesList">
-        <ul>
-            
-        </ul>
-    </div>
-    <button id="addCatToFile" type="button" class="btn btn-default pull-right">Add</button>
-</div>
-
-<div id="renameCatWrapper" class="modalWindow">
-    <div id="modalHeader">Rename category<span>X</span></div>
-    <input type="text" id="catName" name="catName" class="form-control" placeholder="New name">
-    <button id="renameCatButton" type="button" category-id="" class="btn btn-default pull-right">Add</button>
-</div>
-
-<div id="shareContentWrapper" class="modalWindow">
-    
-</div>
-
-<div id="messageBox">
-    <span></span>
-</div>
+@Html.Partial("_Modals");
 
 

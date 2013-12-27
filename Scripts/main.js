@@ -54,6 +54,14 @@
     $('body').on('click', '.filesCategories a.addNewCat', function() {
         showModal("#addNewCatWrapper");
     });
+
+    $('body').on('click', '#shareContent', function () {
+        showModal("#shareContentWrapper");
+    });
+    
+    $('body').on('click', '#userAvatar', function () {
+        showModal("#avatarUploadWrapper");
+    });
     
     $('body').on('click', '.docCategory a.addCatToFile', function () {
         getCategoriesList(".categoriesList");

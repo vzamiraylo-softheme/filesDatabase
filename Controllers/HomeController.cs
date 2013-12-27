@@ -24,7 +24,8 @@ namespace filesDatabase.Controllers
         [InitializeSimpleMembership]
         public ActionResult Index()
         {
-            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+            //WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "Id", "Name", autoCreateTables: true);
+            //ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
             currentUserId = WebSecurity.CurrentUserId;
             currentUserName = WebSecurity.CurrentUserName;
             
@@ -133,6 +134,14 @@ namespace filesDatabase.Controllers
             byte[] array = System.IO.File.ReadAllBytes(file.filePath);
             return new FileContentResult(array, "image/jpeg");
         }
+
+        /*public FileContentResult Avatar(int id)
+        {
+            
+
+            byte[] array = System.IO.File.ReadAllBytes(user.UserAvatar);
+            return new FileContentResult(array, "image/jpeg");
+        }*/
 
         [Authorize]
         [HttpPost]

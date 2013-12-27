@@ -814,12 +814,40 @@ tr.pager td {
     left: 50%;
     top: 50%;
     margin-left: -250px;
-    margin-top: -250px;
+    margin-top: -178px;
     background: white;
 }
 
 #shareContentWrapper {
-    
+    display: none;
+    opacity: 0;
+    border-radius: 4px;
+    z-index: 1;
+    position: fixed;
+    width: 500px;
+    height: 378px;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    margin-left: -250px;
+    margin-top: -178px;
+    background: white;
+}
+
+#avatarUploadWrapper {
+    display: none;
+    opacity: 0;
+    border-radius: 4px;
+    z-index: 1;
+    position: fixed;
+    width: 500px;
+    height: 378px;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    margin-left: -250px;
+    margin-top: -178px;
+    background: white;
 }
 
 #newFileCat_wrapper {
@@ -1002,4 +1030,14 @@ tr.pager td {
 
 #shareContent {
     margin: 10px;
+}
+
+#userAvatar {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    outline: 1px solid #999;
+    float: right;
+    margin-left: 4px;
+    cursor: pointer;
 }
