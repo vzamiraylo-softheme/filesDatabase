@@ -17,8 +17,7 @@ namespace filesDatabase.Controllers
     public class HomeController : Controller
     {
         private readonly FilesDatabaseClass1DataContext _db = new FilesDatabaseClass1DataContext();
-        public int currentUserId;
-        public string currentUserName;
+        public string username;
 
         [Authorize]
         [InitializeSimpleMembership]
@@ -26,20 +25,19 @@ namespace filesDatabase.Controllers
         {
             //WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "Id", "Name", autoCreateTables: true);
             //ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
-            currentUserId = WebSecurity.CurrentUserId;
-            currentUserName = WebSecurity.CurrentUserName;
-            
+
+            username = GetUsername();
+
             var files = (from x in _db.filesTables
-                         where x.userId == currentUserId
+                         where x.userName == username
                          select x).ToList();
 
             return View(GenerateUserFileModels(files));
         }
 
-        [HttpPost]
-        public ActionResult GetUser()
+        public string GetUsername()
         {
-            return RedirectToAction("Index");
+            return FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
         }
 
         public List<userFile> GenerateUserFileModels(List<filesTable> files)
@@ -69,7 +67,7 @@ namespace filesDatabase.Controllers
                         var filename = Path.GetFileName(file.FileName);
                         if (filename != null)
                         {
-                            var physicalPath = Path.Combine(Server.MapPath("~/uploads"), filename);
+                            var physicalPath = Path.Combine(Server.MapPath("~/uploads/files"), filename);
 
                             file.SaveAs(physicalPath);
 
@@ -78,8 +76,7 @@ namespace filesDatabase.Controllers
                                     fileName = fileName == "" ? "Unknown" : fileName,
                                     fileDescription = fileDescription == "" ? "Unknown" : fileDescription,
                                     filePath = physicalPath,
-                                    userId = WebSecurity.CurrentUserId,
-                                    userName = WebSecurity.CurrentUserName
+                                    userName = username
                                 };
                             _db.filesTables.InsertOnSubmit(newModel);
                             _db.SubmitChanges();
@@ -135,13 +132,25 @@ namespace filesDatabase.Controllers
             return new FileContentResult(array, "image/jpeg");
         }
 
-        /*public FileContentResult Avatar(int id)
-        {
-            
 
-            byte[] array = System.IO.File.ReadAllBytes(user.UserAvatar);
+        public ActionResult GetAvatar()
+        {
+            var user = _db.Users.FirstOrDefault(x => x.userName == GetUsername());
+            var defaultAvatar = "D:/Prjcts/ASP.NET MVC4 DocsDatabase/filesDatabase/filesDatabase/uploads/avatars/defaultAvatar.png";
+            byte[] array = {};
+
+                if (user.avatar != null)
+                {
+                    array = System.IO.File.ReadAllBytes(user.avatar);
+
+                }
+                else if(user.avatar == null)
+                {
+                    array = System.IO.File.ReadAllBytes(defaultAvatar);
+                }
+
             return new FileContentResult(array, "image/jpeg");
-        }*/
+        }
 
         [Authorize]
         [HttpPost]

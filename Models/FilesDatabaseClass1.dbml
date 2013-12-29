@@ -21,9 +21,21 @@
       <Column Name="fileName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="fileDescription" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="filePath" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="userName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="filesTable_FileToCategory" Member="FileToCategories" ThisKey="id" OtherKey="FileId" Type="FileToCategory" />
+      <Association Name="filesTable_User" Member="Users" ThisKey="userName" OtherKey="userName" Type="User" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="User">
+      <Column Name="userID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="userName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="userEmail" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="role" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="rememberMe" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="avatar" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="filesTable_User" Member="filesTable" ThisKey="userName" OtherKey="userName" Type="filesTable" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

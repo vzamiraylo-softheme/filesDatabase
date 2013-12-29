@@ -39,6 +39,9 @@ namespace filesDatabase.Models
     partial void InsertfilesTable(filesTable instance);
     partial void UpdatefilesTable(filesTable instance);
     partial void DeletefilesTable(filesTable instance);
+    partial void InsertUser(User instance);
+    partial void UpdateUser(User instance);
+    partial void DeleteUser(User instance);
     #endregion
 		
 		public FilesDatabaseClass1DataContext() : 
@@ -92,6 +95,14 @@ namespace filesDatabase.Models
 			get
 			{
 				return this.GetTable<filesTable>();
+			}
+		}
+		
+		public System.Data.Linq.Table<User> Users
+		{
+			get
+			{
+				return this.GetTable<User>();
 			}
 		}
 	}
@@ -392,11 +403,11 @@ namespace filesDatabase.Models
 		
 		private string _filePath;
 		
-		private int _userId;
-		
 		private string _userName;
 		
 		private EntitySet<FileToCategory> _FileToCategories;
+		
+		private EntitySet<User> _Users;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -410,8 +421,6 @@ namespace filesDatabase.Models
     partial void OnfileDescriptionChanged();
     partial void OnfilePathChanging(string value);
     partial void OnfilePathChanged();
-    partial void OnuserIdChanging(int value);
-    partial void OnuserIdChanged();
     partial void OnuserNameChanging(string value);
     partial void OnuserNameChanged();
     #endregion
@@ -419,6 +428,7 @@ namespace filesDatabase.Models
 		public filesTable()
 		{
 			this._FileToCategories = new EntitySet<FileToCategory>(new Action<FileToCategory>(this.attach_FileToCategories), new Action<FileToCategory>(this.detach_FileToCategories));
+			this._Users = new EntitySet<User>(new Action<User>(this.attach_Users), new Action<User>(this.detach_Users));
 			OnCreated();
 		}
 		
@@ -502,26 +512,6 @@ namespace filesDatabase.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userId", DbType="Int NOT NULL")]
-		public int userId
-		{
-			get
-			{
-				return this._userId;
-			}
-			set
-			{
-				if ((this._userId != value))
-				{
-					this.OnuserIdChanging(value);
-					this.SendPropertyChanging();
-					this._userId = value;
-					this.SendPropertyChanged("userId");
-					this.OnuserIdChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
 		public string userName
 		{
@@ -555,6 +545,19 @@ namespace filesDatabase.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_User", Storage="_Users", ThisKey="userName", OtherKey="userName")]
+		public EntitySet<User> Users
+		{
+			get
+			{
+				return this._Users;
+			}
+			set
+			{
+				this._Users.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -585,6 +588,265 @@ namespace filesDatabase.Models
 		{
 			this.SendPropertyChanging();
 			entity.filesTable = null;
+		}
+		
+		private void attach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.filesTable = this;
+		}
+		
+		private void detach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.filesTable = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Users")]
+	public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _userID;
+		
+		private string _userName;
+		
+		private string _password;
+		
+		private string _userEmail;
+		
+		private string _role;
+		
+		private System.Nullable<bool> _rememberMe;
+		
+		private string _avatar;
+		
+		private EntityRef<filesTable> _filesTable;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnuserIDChanging(int value);
+    partial void OnuserIDChanged();
+    partial void OnuserNameChanging(string value);
+    partial void OnuserNameChanged();
+    partial void OnpasswordChanging(string value);
+    partial void OnpasswordChanged();
+    partial void OnuserEmailChanging(string value);
+    partial void OnuserEmailChanged();
+    partial void OnroleChanging(string value);
+    partial void OnroleChanged();
+    partial void OnrememberMeChanging(System.Nullable<bool> value);
+    partial void OnrememberMeChanged();
+    partial void OnavatarChanging(string value);
+    partial void OnavatarChanged();
+    #endregion
+		
+		public User()
+		{
+			this._filesTable = default(EntityRef<filesTable>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int userID
+		{
+			get
+			{
+				return this._userID;
+			}
+			set
+			{
+				if ((this._userID != value))
+				{
+					this.OnuserIDChanging(value);
+					this.SendPropertyChanging();
+					this._userID = value;
+					this.SendPropertyChanged("userID");
+					this.OnuserIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userName", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string userName
+		{
+			get
+			{
+				return this._userName;
+			}
+			set
+			{
+				if ((this._userName != value))
+				{
+					if (this._filesTable.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnuserNameChanging(value);
+					this.SendPropertyChanging();
+					this._userName = value;
+					this.SendPropertyChanged("userName");
+					this.OnuserNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_password", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string password
+		{
+			get
+			{
+				return this._password;
+			}
+			set
+			{
+				if ((this._password != value))
+				{
+					this.OnpasswordChanging(value);
+					this.SendPropertyChanging();
+					this._password = value;
+					this.SendPropertyChanged("password");
+					this.OnpasswordChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userEmail", DbType="NVarChar(50)")]
+		public string userEmail
+		{
+			get
+			{
+				return this._userEmail;
+			}
+			set
+			{
+				if ((this._userEmail != value))
+				{
+					this.OnuserEmailChanging(value);
+					this.SendPropertyChanging();
+					this._userEmail = value;
+					this.SendPropertyChanged("userEmail");
+					this.OnuserEmailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_role", DbType="NVarChar(50)")]
+		public string role
+		{
+			get
+			{
+				return this._role;
+			}
+			set
+			{
+				if ((this._role != value))
+				{
+					this.OnroleChanging(value);
+					this.SendPropertyChanging();
+					this._role = value;
+					this.SendPropertyChanged("role");
+					this.OnroleChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_rememberMe", DbType="Bit")]
+		public System.Nullable<bool> rememberMe
+		{
+			get
+			{
+				return this._rememberMe;
+			}
+			set
+			{
+				if ((this._rememberMe != value))
+				{
+					this.OnrememberMeChanging(value);
+					this.SendPropertyChanging();
+					this._rememberMe = value;
+					this.SendPropertyChanged("rememberMe");
+					this.OnrememberMeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_avatar", DbType="NVarChar(MAX)")]
+		public string avatar
+		{
+			get
+			{
+				return this._avatar;
+			}
+			set
+			{
+				if ((this._avatar != value))
+				{
+					this.OnavatarChanging(value);
+					this.SendPropertyChanging();
+					this._avatar = value;
+					this.SendPropertyChanged("avatar");
+					this.OnavatarChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_User", Storage="_filesTable", ThisKey="userName", OtherKey="userName", IsForeignKey=true)]
+		public filesTable filesTable
+		{
+			get
+			{
+				return this._filesTable.Entity;
+			}
+			set
+			{
+				filesTable previousValue = this._filesTable.Entity;
+				if (((previousValue != value) 
+							|| (this._filesTable.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._filesTable.Entity = null;
+						previousValue.Users.Remove(this);
+					}
+					this._filesTable.Entity = value;
+					if ((value != null))
+					{
+						value.Users.Add(this);
+						this._userName = value.userName;
+					}
+					else
+					{
+						this._userName = default(string);
+					}
+					this.SendPropertyChanged("filesTable");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿@model filesDatabase.Models.LoginModel
+﻿@model filesDatabase.Models.User
 
 @{
     ViewBag.Title = "Log in";
@@ -18,19 +18,19 @@
         <legend>Log in Form</legend>
         <ol>
             <li>
-                @Html.LabelFor(m => m.UserName)
-                @Html.TextBoxFor(m => m.UserName)
-                @Html.ValidationMessageFor(m => m.UserName)
+                @Html.LabelFor(m => m.userName)
+                @Html.TextBoxFor(m => m.userName)
+                @Html.ValidationMessageFor(m => m.userName)
             </li>
             <li>
-                @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password)
+                @Html.LabelFor(m => m.password)
+                @Html.PasswordFor(m => m.password)
+                @Html.ValidationMessageFor(m => m.password)
             </li>
-            <li>
+           @*<li>
                 @Html.CheckBoxFor(m => m.RememberMe)
                 @Html.LabelFor(m => m.RememberMe, new { @class = "checkbox" })
-            </li>
+            </li>*@
         </ol>
         <input type="submit" value="Log in" />
     </fieldset>

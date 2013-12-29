@@ -32,16 +32,55 @@ namespace filesDatabase.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginModel model, string returnUrl)
+        //[ValidateAntiForgeryToken]
+        public ActionResult Login(User model, string returnUrl)
         {
-            if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
+            //if (ModelState.IsValid && WebSecurity.Login(model.userName, model.password, persistCookie: model.rememberMe))
+            //{
+            //    return RedirectToLocal(returnUrl);
+            //}
+
+            //// If we got this far, something failed, redisplay form
+            //ModelState.AddModelError("", "The user name or password provided is incorrect.");
+            //return View(model);
+
+            // Lets first check if the Model is valid or not
+            if (ModelState.IsValid)
             {
-                return RedirectToLocal(returnUrl);
+                using (FilesDatabaseClass1DataContext db = new FilesDatabaseClass1DataContext())
+                {
+                    string username = model.userName;
+                    string password = model.password;
+
+                    // Now if our password was enctypted or hashed we would have done the
+                    // same operation on the user entered password here, But for now
+                    // since the password is in plain text lets just authenticate directly
+
+                    bool userValid = db.Users.Any(user => user.userName == username && user.password == password);
+
+                    // User found in the database
+                    if (userValid)
+                    {
+
+                        FormsAuthentication.SetAuthCookie(username, false);
+                        if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+                            && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                    }
+                }
             }
 
             // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "The user name or password provided is incorrect.");
             return View(model);
         }
 
@@ -52,7 +91,8 @@ namespace filesDatabase.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            WebSecurity.Logout();
+            //WebSecurity.Logout();
+            FormsAuthentication.SignOut();
 
             return RedirectToAction("Index", "Home");
         }
