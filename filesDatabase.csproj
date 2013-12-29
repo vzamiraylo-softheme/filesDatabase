@@ -329,6 +329,7 @@
     <Content Include="Views\Home\LargeView.cshtml" />
     <Content Include="Views\Home\_SharedList.cshtml" />
     <Content Include="Views\Home\_Modals.cshtml" />
+    <Content Include="Views\Home\_shareFileTpl.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

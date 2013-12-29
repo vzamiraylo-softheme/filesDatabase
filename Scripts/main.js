@@ -54,8 +54,23 @@
     $('body').on('click', '.filesCategories a.addNewCat', function() {
         showModal("#addNewCatWrapper");
     });
+    
+    $('body').on('click', '#filesSection .shareTpl_Item', function () {
+        $(this).find('div.shareTpl_hover').toggleClass('checked');
+    });
 
     $('body').on('click', '#shareContent', function () {
+        $.ajax({
+            url: "/Home/GetThumbsForShare",
+            type: "POST",
+            data: {
+                id : -1
+            },
+            success: function (data) {
+                $('#filesSection').empty();
+                $('#filesSection').append(data);
+            }
+        });
         showModal("#shareContentWrapper");
     });
     

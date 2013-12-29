@@ -178,6 +178,19 @@ namespace filesDatabase.Controllers
             return PartialView("_FilesList", GenerateUserFileModels(files));
         }
 
+        [HttpPost]
+        public ActionResult GetThumbsForShare()
+        {
+            List<filesTable> files;
+
+                files = (from x in _db.filesTables
+                         select x).ToList();
+
+            files.OrderByDescending(x => x.id);
+
+            return PartialView("_shareFileTpl", GenerateUserFileModels(files));
+        }
+
 
         [Authorize]
         [HttpPost]

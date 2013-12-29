@@ -824,14 +824,66 @@ tr.pager td {
     border-radius: 4px;
     z-index: 1;
     position: fixed;
-    width: 500px;
-    height: 378px;
+    width: 900px;
+    height: 600px;
     padding: 10px;
     left: 50%;
     top: 50%;
-    margin-left: -250px;
-    margin-top: -178px;
+    margin-left: -450px;
+    margin-top: -300px;
     background: white;
+}
+
+#filesSection div.shareTpl_Item {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 110px;
+    height: 110px;
+}
+
+#filesSection div.shareTpl_Item a{
+    margin-bottom: 0px;
+    width: 100px;
+    height: 100px;
+}
+
+#filesSection div.shareTpl_Item img{
+    max-width: 90px;
+    max-height: 90px;
+}
+
+.shareTpl_hover.checked {
+    background-color: black;
+    display: block;
+    opacity: 0.2;
+    border-radius: 4px;
+    background-size: 20px 20px;
+    background-image: url(http://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Ok_circle_font_awesome.svg/512px-Ok_circle_font_awesome.svg.png);
+    background-repeat: no-repeat;
+    background-position: 98% 50%;
+}
+
+.shareTpl_hover {
+    position: absolute;
+    display: none;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.shareTpl_hover.checked:hover {
+    opacity: 0.3;
+}
+
+#filesSection {
+    width: 52%;
+    height: 530px;
+    overflow-y: auto;
+    float: left;
+    padding: 5px;
+    border-color: #c8c8c8;
+    border-width: 0px 1px 0px 0px;
+    border-style: solid;
 }
 
 #avatarUploadWrapper {
