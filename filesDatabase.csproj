@@ -331,6 +331,7 @@
     <Content Include="Views\Home\_SharedList.cshtml" />
     <Content Include="Views\Home\_Modals.cshtml" />
     <Content Include="Views\Home\_shareFileTpl.cshtml" />
+    <Content Include="Views\Home\_userSearchShare.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

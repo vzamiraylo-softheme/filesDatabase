@@ -781,7 +781,7 @@ tr.pager td {
     left: 50%;
     background: white;
     border-radius: 4px;
-    z-index: 1;
+    z-index: 99;
     position: absolute;
     box-shadow: 0px 0px 10px black;
 }
@@ -825,20 +825,20 @@ tr.pager td {
     z-index: 1;
     position: fixed;
     width: 900px;
-    height: 600px;
+    height: 635px;
     padding: 10px;
     left: 50%;
     top: 50%;
     margin-left: -450px;
-    margin-top: -300px;
+    margin-top: -317.5px;
     background: white;
 }
 
 #filesSection div.shareTpl_Item {
     padding-left: 5px;
     padding-right: 5px;
-    width: 110px;
-    height: 110px;
+    width: 105px;
+    height: 105px;
 }
 
 #filesSection div.shareTpl_Item a{
@@ -852,10 +852,42 @@ tr.pager td {
     max-height: 90px;
 }
 
-.shareTpl_hover.checked {
+.checked {
     background-color: black;
     display: block;
     opacity: 0.2;
+}
+
+#userSearchResult .row {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+#userSearchResult .row:hover .userSearchHover{
+    background-color: black;
+    display: block;
+    opacity: 0.1;
+}
+
+#userSearchResult .row .thumbnail {
+    margin-bottom: 0;
+}
+
+.userSearchHover {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 4px;
+}
+
+.shareTpl_hover.checked {
+    background-color: black;
+    display: block;
+    opacity: 0.1;
     border-radius: 4px;
     background-size: 20px 20px;
     background-image: url(http://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Ok_circle_font_awesome.svg/512px-Ok_circle_font_awesome.svg.png);
@@ -1092,4 +1124,47 @@ tr.pager td {
     float: right;
     margin-left: 4px;
     cursor: pointer;
+}
+
+#userAvatar img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+#avatar_big {
+    max-height: 230px;
+    max-width: 230px;
+    margin-bottom: 30px;
+}
+
+#avatarUploadContent {
+    text-align: center;
+}
+
+#avatarUploadContent input {
+    width: 138px;
+    position: absolute;
+    left: 145px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#userSection {
+    height: 530px;
+    width: 48%;
+    float: left;
+    padding: 5px;
+}
+
+#userSection label {
+    font-size: 14px;
+    font-weight: 200;
+}
+
+#userSearchResult {
+    width: 100%;
+    height: 450px;
+    margin-top: 10px;
+    position: relative;
+    overflow-y: auto;
 }

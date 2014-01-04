@@ -30,14 +30,21 @@ namespace filesDatabase.Controllers
 
             var files = (from x in _db.filesTables
                          where x.userName == username
-                         select x).ToList();
+                         select x).OrderByDescending(x => x.id).ToList();
 
             return View(GenerateUserFileModels(files));
         }
 
         public string GetUsername()
         {
-            return FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
+            try
+            {
+                return FormsAuthentication.Decrypt(Request.Cookies[FormsAuthentication.FormsCookieName].Value).Name;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public List<userFile> GenerateUserFileModels(List<filesTable> files)
@@ -57,6 +64,7 @@ namespace filesDatabase.Controllers
         public ActionResult AddFile(IEnumerable<HttpPostedFileBase> files, string fileName, string fileDescription, string categories)
         {
             int newFileId = 0;
+            List<filesTable> list = new List<filesTable>();
 
             if (files != null)
             {
@@ -76,7 +84,7 @@ namespace filesDatabase.Controllers
                                     fileName = fileName == "" ? "Unknown" : fileName,
                                     fileDescription = fileDescription == "" ? "Unknown" : fileDescription,
                                     filePath = physicalPath,
-                                    userName = username
+                                    userName = GetUsername()
                                 };
                             _db.filesTables.InsertOnSubmit(newModel);
                             _db.SubmitChanges();
@@ -103,15 +111,16 @@ namespace filesDatabase.Controllers
                             }
 
                         }
+                        var newFile = (from x in _db.filesTables
+                                       where x.id == newFileId
+                                       select x).FirstOrDefault();
+                        list.Add(newFile);
                     }
                 }
             }
 
-                var newFile = (from x in _db.filesTables
-                              where x.id == newFileId
-                              select x).ToList();
 
-            return PartialView("_FilesList", GenerateUserFileModels(newFile));
+            return PartialView("_FilesList", GenerateUserFileModels(list));
             
         }
 
@@ -133,30 +142,108 @@ namespace filesDatabase.Controllers
         }
 
 
-        public ActionResult GetAvatar()
+        public FileContentResult GetAvatar(string avatarType, string nameOfUser)
         {
-            var user = _db.Users.FirstOrDefault(x => x.userName == GetUsername());
-            var defaultAvatar = "D:/Prjcts/ASP.NET MVC4 DocsDatabase/filesDatabase/filesDatabase/uploads/avatars/defaultAvatar.png";
-            byte[] array = {};
+            var defaultAvatar =
+                    "D:/Prjcts/ASP.NET MVC4 DocsDatabase/filesDatabase/filesDatabase/uploads/avatars/defaultAvatar.png";
+            byte[] array = { };
 
-                if (user.avatar != null)
+            try
+            {
+
+                if (avatarType == "currentUser")
                 {
-                    array = System.IO.File.ReadAllBytes(user.avatar);
+                    var user = _db.Users.FirstOrDefault(x => x.userName == GetUsername());
 
+                    if (user.avatar != null)
+                    {
+                        array = System.IO.File.ReadAllBytes(user.avatar);
+                    }
+                    else if (user.avatar == null)
+                    {
+                        array = System.IO.File.ReadAllBytes(defaultAvatar);
+                    }
+
+                    return new FileContentResult(array, "image/jpeg");
                 }
-                else if(user.avatar == null)
+                if (avatarType == "share")
                 {
-                    array = System.IO.File.ReadAllBytes(defaultAvatar);
+                    var user = _db.Users.FirstOrDefault(x => x.userName == nameOfUser);
+
+                    if (user.avatar != null)
+                    {
+                        array = System.IO.File.ReadAllBytes(user.avatar);
+                    }
+                    else if (user.avatar == null)
+                    {
+                        array = System.IO.File.ReadAllBytes(defaultAvatar);
+                    }
+
+                    return new FileContentResult(array, "image/jpeg");
                 }
 
+            }
+            catch
+            {
+                array = System.IO.File.ReadAllBytes(defaultAvatar);
+                return new FileContentResult(array, "image/jpeg"); 
+            }
+            
+            array = System.IO.File.ReadAllBytes(defaultAvatar);
             return new FileContentResult(array, "image/jpeg");
+        }
+
+    [HttpPost]
+    public ActionResult DeleteAvatar()
+    {
+        var defaultAvatar =
+                    "../uploads/avatars/defaultAvatar.png";
+
+        try
+        {
+            var userAvatar = (from x in _db.Users
+                             where x.userName == GetUsername()
+                             select x).FirstOrDefault();
+            userAvatar.avatar = null;
+            _db.SubmitChanges();
+
+            return Json(new { message = "Deleted", result = true, avatar = defaultAvatar });
+        }
+        catch
+        {
+            return Json(new{message = "Something went wrong!", result = false});
+        }
+    }
+
+        [HttpPost]
+        public ActionResult UploadAvatar(IEnumerable<HttpPostedFileBase> avatar_input)
+        {
+            try
+            {
+                var avatar = avatar_input.First();
+                var user = _db.Users.FirstOrDefault(x => x.userName == GetUsername());
+                var filename = Path.GetFileName(avatar.FileName);
+                var physicalPath = Path.Combine(Server.MapPath("~/uploads/avatars"), filename);
+                avatar.SaveAs(physicalPath);
+
+                user.avatar = physicalPath;
+                _db.SubmitChanges();
+
+                byte[] array = System.IO.File.ReadAllBytes(physicalPath);
+
+                return Json(new {result = true, avatar = "../uploads/avatars/" + filename});
+            }
+            catch
+            {
+                return Json(new { result = false, message = "Something went wrong!"});
+            }
         }
 
         [Authorize]
         [HttpPost]
         public JsonResult GetCategories()
         {
-            var categories = _db.Categories.ToList();
+            var categories = _db.Categories.Where(x => x.UserName == GetUsername()).ToList();
             return Json(categories.Select(x => new
                 {
                     id = x.Id,
@@ -174,11 +261,13 @@ namespace filesDatabase.Controllers
             {
                 files = (from x in _db.FileToCategories
                         where x.CatId == catId
+                        where x.filesTable.userName == GetUsername()
                         select x.filesTable).ToList();
             }
             else
             {
                 files = (from x in _db.filesTables
+                         where x.userName == GetUsername()
                             select x).ToList(); 
             }
 
@@ -193,11 +282,26 @@ namespace filesDatabase.Controllers
             List<filesTable> files;
 
                 files = (from x in _db.filesTables
+                         where x.userName == GetUsername()
                          select x).ToList();
 
             files.OrderByDescending(x => x.id);
 
             return PartialView("_shareFileTpl", GenerateUserFileModels(files));
+        }
+
+        [HttpPost]
+        public ActionResult UserSearch(string type, string str)
+        {
+            /*TODO*/
+            /*if (type == "share")
+            {*/
+                List<User> users = (from x in _db.Users
+                            where x.userName.Contains(str)
+                                    select x).OrderBy(x => x.userName).ToList();
+
+                return PartialView("_userSearchShare", users);
+            //}
         }
 
 
@@ -206,6 +310,7 @@ namespace filesDatabase.Controllers
         public ActionResult AddNewCategory(string catName)
         {
             var categories = from x in _db.Categories
+                             where x.UserName == GetUsername()
                              select x;
             foreach (var category in categories)
             {
@@ -215,7 +320,8 @@ namespace filesDatabase.Controllers
 
             Category model = new Category
                 {
-                    CatName = catName
+                    CatName = catName,
+                    UserName = GetUsername()
                 };
             _db.Categories.InsertOnSubmit(model);
             _db.SubmitChanges();
@@ -233,7 +339,7 @@ namespace filesDatabase.Controllers
                 var fileCats = from s in cat_ids.Split(',') orderby s descending select s;
                 foreach (var fileCat in fileCats)
                 {
-                    bool file = _db.FileToCategories.Any(x => x.CatId == Int32.Parse(fileCat) && x.FileId == file_id);
+                    bool file = _db.FileToCategories.Where(x => x.Category.UserName == GetUsername()).Any(x => x.CatId == Int32.Parse(fileCat) && x.FileId == file_id);
                     if(file)continue;
 
                     var item = new FileToCategory
@@ -263,6 +369,7 @@ namespace filesDatabase.Controllers
             {
                 var category = (from x in _db.Categories
                                 where x.Id == id
+                                where x.UserName == GetUsername()
                                 select x).FirstOrDefault();
                 category.CatName = newName;
                 _db.SubmitChanges();
@@ -307,12 +414,12 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult DeleteCategory(int id)
         {
-            var file = (from x in _db.Categories
+            var category = (from x in _db.Categories
                         where x.Id == id
                         select x).FirstOrDefault();
-            if (file != null)
+            if (category != null)
             {
-                _db.Categories.DeleteOnSubmit(file);
+                _db.Categories.DeleteOnSubmit(category);
                 _db.SubmitChanges();
 
                 if (RefreshCategory(id))
@@ -334,15 +441,11 @@ namespace filesDatabase.Controllers
         {
             try
             {
-                var file = from x in _db.FileToCategories
+                var file = (from x in _db.FileToCategories
                            where x.CatId == cat_id
                            where x.FileId == doc_id
-                           select x;
-                foreach (var item in file)
-                {
-                    _db.FileToCategories.DeleteOnSubmit(item);
-
-                }
+                           select x).FirstOrDefault();
+                    _db.FileToCategories.DeleteOnSubmit(file);
 
                 _db.SubmitChanges();
 
@@ -364,7 +467,7 @@ namespace filesDatabase.Controllers
                             select x;
                 foreach (var file in files)
                 {
-                   file.CatId = 0;
+                   _db.FileToCategories.DeleteOnSubmit(file);
                 }
                 _db.SubmitChanges();
             }
@@ -380,12 +483,44 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult GetSharedContent()
         {
+            var currentUserId = _db.Users.Where(x => x.userName == GetUsername()).Select(x => x.userID).FirstOrDefault();
 
-            var files = (from x in _db.filesTables
+            var files = (from x in _db.sharedContents
+                         where x.userId == currentUserId
                          select x).ToList();
 
-            return PartialView("_SharedList", GenerateUserFileModels(files));
+            return PartialView("_SharedList", files);
         }
+
+    [HttpPost]
+    public ActionResult ShareContent(string files, string users)
+    {
+        var filesArray = files.Split(',').Select(x => Int32.Parse(x)).ToArray();
+        var usersArray = users.Split(',').Select(x => Int32.Parse(x)).ToArray();
+
+        try
+        {
+            foreach (var user in usersArray)
+            {
+                foreach (var file in filesArray)
+                {
+                    sharedContent item = new sharedContent
+                        {
+                            userId = user,
+                            fileId = file
+                        };
+                    _db.sharedContents.InsertOnSubmit(item);
+                }
+            }
+            _db.SubmitChanges();
+
+            return Json(new {result = true, message = "Files have been shared!"});
+        }
+        catch
+        {
+            return Json(new { result = false, message = "Something went wrong!" });
+        }
+    }
 
         public ActionResult About()
         {

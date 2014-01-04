@@ -30,9 +30,6 @@ namespace filesDatabase.Models
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertCategory(Category instance);
-    partial void UpdateCategory(Category instance);
-    partial void DeleteCategory(Category instance);
     partial void InsertFileToCategory(FileToCategory instance);
     partial void UpdateFileToCategory(FileToCategory instance);
     partial void DeleteFileToCategory(FileToCategory instance);
@@ -42,6 +39,12 @@ namespace filesDatabase.Models
     partial void InsertUser(User instance);
     partial void UpdateUser(User instance);
     partial void DeleteUser(User instance);
+    partial void InsertCategory(Category instance);
+    partial void UpdateCategory(Category instance);
+    partial void DeleteCategory(Category instance);
+    partial void InsertsharedContent(sharedContent instance);
+    partial void UpdatesharedContent(sharedContent instance);
+    partial void DeletesharedContent(sharedContent instance);
     #endregion
 		
 		public FilesDatabaseClass1DataContext() : 
@@ -74,14 +77,6 @@ namespace filesDatabase.Models
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Category> Categories
-		{
-			get
-			{
-				return this.GetTable<Category>();
-			}
-		}
-		
 		public System.Data.Linq.Table<FileToCategory> FileToCategories
 		{
 			get
@@ -105,119 +100,21 @@ namespace filesDatabase.Models
 				return this.GetTable<User>();
 			}
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Categories")]
-	public partial class Category : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _CatName;
-		
-		private EntitySet<FileToCategory> _FileToCategories;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnCatNameChanging(string value);
-    partial void OnCatNameChanged();
-    #endregion
-		
-		public Category()
-		{
-			this._FileToCategories = new EntitySet<FileToCategory>(new Action<FileToCategory>(this.attach_FileToCategories), new Action<FileToCategory>(this.detach_FileToCategories));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		public System.Data.Linq.Table<Category> Categories
 		{
 			get
 			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+				return this.GetTable<Category>();
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CatName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string CatName
+		public System.Data.Linq.Table<sharedContent> sharedContents
 		{
 			get
 			{
-				return this._CatName;
+				return this.GetTable<sharedContent>();
 			}
-			set
-			{
-				if ((this._CatName != value))
-				{
-					this.OnCatNameChanging(value);
-					this.SendPropertyChanging();
-					this._CatName = value;
-					this.SendPropertyChanged("CatName");
-					this.OnCatNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_FileToCategory", Storage="_FileToCategories", ThisKey="Id", OtherKey="CatId")]
-		public EntitySet<FileToCategory> FileToCategories
-		{
-			get
-			{
-				return this._FileToCategories;
-			}
-			set
-			{
-				this._FileToCategories.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_FileToCategories(FileToCategory entity)
-		{
-			this.SendPropertyChanging();
-			entity.Category = this;
-		}
-		
-		private void detach_FileToCategories(FileToCategory entity)
-		{
-			this.SendPropertyChanging();
-			entity.Category = null;
 		}
 	}
 	
@@ -231,9 +128,9 @@ namespace filesDatabase.Models
 		
 		private int _CatId;
 		
-		private EntityRef<Category> _Category;
-		
 		private EntityRef<filesTable> _filesTable;
+		
+		private EntityRef<Category> _Category;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -247,8 +144,8 @@ namespace filesDatabase.Models
 		
 		public FileToCategory()
 		{
-			this._Category = default(EntityRef<Category>);
 			this._filesTable = default(EntityRef<filesTable>);
+			this._Category = default(EntityRef<Category>);
 			OnCreated();
 		}
 		
@@ -300,40 +197,6 @@ namespace filesDatabase.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_FileToCategory", Storage="_Category", ThisKey="CatId", OtherKey="Id", IsForeignKey=true)]
-		public Category Category
-		{
-			get
-			{
-				return this._Category.Entity;
-			}
-			set
-			{
-				Category previousValue = this._Category.Entity;
-				if (((previousValue != value) 
-							|| (this._Category.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Category.Entity = null;
-						previousValue.FileToCategories.Remove(this);
-					}
-					this._Category.Entity = value;
-					if ((value != null))
-					{
-						value.FileToCategories.Add(this);
-						this._CatId = value.Id;
-					}
-					else
-					{
-						this._CatId = default(int);
-					}
-					this.SendPropertyChanged("Category");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_FileToCategory", Storage="_filesTable", ThisKey="FileId", OtherKey="id", IsForeignKey=true)]
 		public filesTable filesTable
 		{
@@ -364,6 +227,40 @@ namespace filesDatabase.Models
 						this._FileId = default(int);
 					}
 					this.SendPropertyChanged("filesTable");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_FileToCategory", Storage="_Category", ThisKey="CatId", OtherKey="Id", IsForeignKey=true)]
+		public Category Category
+		{
+			get
+			{
+				return this._Category.Entity;
+			}
+			set
+			{
+				Category previousValue = this._Category.Entity;
+				if (((previousValue != value) 
+							|| (this._Category.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Category.Entity = null;
+						previousValue.FileToCategories.Remove(this);
+					}
+					this._Category.Entity = value;
+					if ((value != null))
+					{
+						value.FileToCategories.Add(this);
+						this._CatId = value.Id;
+					}
+					else
+					{
+						this._CatId = default(int);
+					}
+					this.SendPropertyChanged("Category");
 				}
 			}
 		}
@@ -409,6 +306,8 @@ namespace filesDatabase.Models
 		
 		private EntitySet<User> _Users;
 		
+		private EntitySet<sharedContent> _sharedContents;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -429,6 +328,7 @@ namespace filesDatabase.Models
 		{
 			this._FileToCategories = new EntitySet<FileToCategory>(new Action<FileToCategory>(this.attach_FileToCategories), new Action<FileToCategory>(this.detach_FileToCategories));
 			this._Users = new EntitySet<User>(new Action<User>(this.attach_Users), new Action<User>(this.detach_Users));
+			this._sharedContents = new EntitySet<sharedContent>(new Action<sharedContent>(this.attach_sharedContents), new Action<sharedContent>(this.detach_sharedContents));
 			OnCreated();
 		}
 		
@@ -558,6 +458,19 @@ namespace filesDatabase.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_sharedContent", Storage="_sharedContents", ThisKey="id", OtherKey="fileId")]
+		public EntitySet<sharedContent> sharedContents
+		{
+			get
+			{
+				return this._sharedContents;
+			}
+			set
+			{
+				this._sharedContents.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -601,6 +514,18 @@ namespace filesDatabase.Models
 			this.SendPropertyChanging();
 			entity.filesTable = null;
 		}
+		
+		private void attach_sharedContents(sharedContent entity)
+		{
+			this.SendPropertyChanging();
+			entity.filesTable = this;
+		}
+		
+		private void detach_sharedContents(sharedContent entity)
+		{
+			this.SendPropertyChanging();
+			entity.filesTable = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Users")]
@@ -623,7 +548,11 @@ namespace filesDatabase.Models
 		
 		private string _avatar;
 		
+		private EntitySet<sharedContent> _sharedContents;
+		
 		private EntityRef<filesTable> _filesTable;
+		
+		private EntityRef<Category> _Category;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -647,7 +576,9 @@ namespace filesDatabase.Models
 		
 		public User()
 		{
+			this._sharedContents = new EntitySet<sharedContent>(new Action<sharedContent>(this.attach_sharedContents), new Action<sharedContent>(this.detach_sharedContents));
 			this._filesTable = default(EntityRef<filesTable>);
+			this._Category = default(EntityRef<Category>);
 			OnCreated();
 		}
 		
@@ -682,7 +613,7 @@ namespace filesDatabase.Models
 			{
 				if ((this._userName != value))
 				{
-					if (this._filesTable.HasLoadedOrAssignedValue)
+					if ((this._filesTable.HasLoadedOrAssignedValue || this._Category.HasLoadedOrAssignedValue))
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -795,6 +726,19 @@ namespace filesDatabase.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_sharedContent", Storage="_sharedContents", ThisKey="userID", OtherKey="userId")]
+		public EntitySet<sharedContent> sharedContents
+		{
+			get
+			{
+				return this._sharedContents;
+			}
+			set
+			{
+				this._sharedContents.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_User", Storage="_filesTable", ThisKey="userName", OtherKey="userName", IsForeignKey=true)]
 		public filesTable filesTable
 		{
@@ -823,6 +767,386 @@ namespace filesDatabase.Models
 					else
 					{
 						this._userName = default(string);
+					}
+					this.SendPropertyChanged("filesTable");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_User", Storage="_Category", ThisKey="userName", OtherKey="UserName", IsForeignKey=true)]
+		public Category Category
+		{
+			get
+			{
+				return this._Category.Entity;
+			}
+			set
+			{
+				Category previousValue = this._Category.Entity;
+				if (((previousValue != value) 
+							|| (this._Category.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Category.Entity = null;
+						previousValue.Users.Remove(this);
+					}
+					this._Category.Entity = value;
+					if ((value != null))
+					{
+						value.Users.Add(this);
+						this._userName = value.UserName;
+					}
+					else
+					{
+						this._userName = default(string);
+					}
+					this.SendPropertyChanged("Category");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_sharedContents(sharedContent entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_sharedContents(sharedContent entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Categories")]
+	public partial class Category : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _CatName;
+		
+		private string _UserName;
+		
+		private EntitySet<FileToCategory> _FileToCategories;
+		
+		private EntitySet<User> _Users;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnCatNameChanging(string value);
+    partial void OnCatNameChanged();
+    partial void OnUserNameChanging(string value);
+    partial void OnUserNameChanged();
+    #endregion
+		
+		public Category()
+		{
+			this._FileToCategories = new EntitySet<FileToCategory>(new Action<FileToCategory>(this.attach_FileToCategories), new Action<FileToCategory>(this.detach_FileToCategories));
+			this._Users = new EntitySet<User>(new Action<User>(this.attach_Users), new Action<User>(this.detach_Users));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CatName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string CatName
+		{
+			get
+			{
+				return this._CatName;
+			}
+			set
+			{
+				if ((this._CatName != value))
+				{
+					this.OnCatNameChanging(value);
+					this.SendPropertyChanging();
+					this._CatName = value;
+					this.SendPropertyChanged("CatName");
+					this.OnCatNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string UserName
+		{
+			get
+			{
+				return this._UserName;
+			}
+			set
+			{
+				if ((this._UserName != value))
+				{
+					this.OnUserNameChanging(value);
+					this.SendPropertyChanging();
+					this._UserName = value;
+					this.SendPropertyChanged("UserName");
+					this.OnUserNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_FileToCategory", Storage="_FileToCategories", ThisKey="Id", OtherKey="CatId")]
+		public EntitySet<FileToCategory> FileToCategories
+		{
+			get
+			{
+				return this._FileToCategories;
+			}
+			set
+			{
+				this._FileToCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_User", Storage="_Users", ThisKey="UserName", OtherKey="userName")]
+		public EntitySet<User> Users
+		{
+			get
+			{
+				return this._Users;
+			}
+			set
+			{
+				this._Users.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_FileToCategories(FileToCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Category = this;
+		}
+		
+		private void detach_FileToCategories(FileToCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Category = null;
+		}
+		
+		private void attach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.Category = this;
+		}
+		
+		private void detach_Users(User entity)
+		{
+			this.SendPropertyChanging();
+			entity.Category = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.sharedContent")]
+	public partial class sharedContent : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _userId;
+		
+		private int _fileId;
+		
+		private EntityRef<User> _User;
+		
+		private EntityRef<filesTable> _filesTable;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnuserIdChanging(int value);
+    partial void OnuserIdChanged();
+    partial void OnfileIdChanging(int value);
+    partial void OnfileIdChanged();
+    #endregion
+		
+		public sharedContent()
+		{
+			this._User = default(EntityRef<User>);
+			this._filesTable = default(EntityRef<filesTable>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int userId
+		{
+			get
+			{
+				return this._userId;
+			}
+			set
+			{
+				if ((this._userId != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnuserIdChanging(value);
+					this.SendPropertyChanging();
+					this._userId = value;
+					this.SendPropertyChanged("userId");
+					this.OnuserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_fileId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int fileId
+		{
+			get
+			{
+				return this._fileId;
+			}
+			set
+			{
+				if ((this._fileId != value))
+				{
+					if (this._filesTable.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnfileIdChanging(value);
+					this.SendPropertyChanging();
+					this._fileId = value;
+					this.SendPropertyChanged("fileId");
+					this.OnfileIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_sharedContent", Storage="_User", ThisKey="userId", OtherKey="userID", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.sharedContents.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.sharedContents.Add(this);
+						this._userId = value.userID;
+					}
+					else
+					{
+						this._userId = default(int);
+					}
+					this.SendPropertyChanged("User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="filesTable_sharedContent", Storage="_filesTable", ThisKey="fileId", OtherKey="id", IsForeignKey=true)]
+		public filesTable filesTable
+		{
+			get
+			{
+				return this._filesTable.Entity;
+			}
+			set
+			{
+				filesTable previousValue = this._filesTable.Entity;
+				if (((previousValue != value) 
+							|| (this._filesTable.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._filesTable.Entity = null;
+						previousValue.sharedContents.Remove(this);
+					}
+					this._filesTable.Entity = value;
+					if ((value != null))
+					{
+						value.sharedContents.Add(this);
+						this._fileId = value.id;
+					}
+					else
+					{
+						this._fileId = default(int);
 					}
 					this.SendPropertyChanged("filesTable");
 				}

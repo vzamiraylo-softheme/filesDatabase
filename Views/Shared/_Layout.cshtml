@@ -29,7 +29,7 @@
                     <p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>
                 </div>
                 <div class="float-right" style="width:300px;">
-                    <div id="userAvatar"></div>
+                    <div id="userAvatar"><img src="@Url.Action("GetAvatar", "Home" ,new { avatarType = "currentUser", nameOfUser = "null" } )" /></div>
                     <section id="login">
                         @Html.Partial("_LoginPartial")
                     </section>

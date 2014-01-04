@@ -1,18 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="filesDatabase" Class="FilesDatabaseClass1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=(local);Initial Catalog=filesDatabase;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="filesDatabaseConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.Categories" Member="Categories">
-    <Type Name="Category">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="CatName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Category_FileToCategory" Member="FileToCategories" ThisKey="Id" OtherKey="CatId" Type="FileToCategory" />
-    </Type>
-  </Table>
   <Table Name="dbo.FileToCategory" Member="FileToCategories">
     <Type Name="FileToCategory">
       <Column Name="FileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="CatId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Category_FileToCategory" Member="Category" ThisKey="CatId" OtherKey="Id" Type="Category" IsForeignKey="true" />
       <Association Name="filesTable_FileToCategory" Member="filesTable" ThisKey="FileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
+      <Association Name="Category_FileToCategory" Member="Category" ThisKey="CatId" OtherKey="Id" Type="Category" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.filesTable" Member="filesTables">
@@ -24,6 +17,7 @@
       <Column Name="userName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="filesTable_FileToCategory" Member="FileToCategories" ThisKey="id" OtherKey="FileId" Type="FileToCategory" />
       <Association Name="filesTable_User" Member="Users" ThisKey="userName" OtherKey="userName" Type="User" />
+      <Association Name="filesTable_sharedContent" Member="sharedContents" ThisKey="id" OtherKey="fileId" Type="sharedContent" />
     </Type>
   </Table>
   <Table Name="dbo.Users" Member="Users">
@@ -35,7 +29,26 @@
       <Column Name="role" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="rememberMe" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="avatar" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="User_sharedContent" Member="sharedContents" ThisKey="userID" OtherKey="userId" Type="sharedContent" />
       <Association Name="filesTable_User" Member="filesTable" ThisKey="userName" OtherKey="userName" Type="filesTable" IsForeignKey="true" />
+      <Association Name="Category_User" Member="Category" ThisKey="userName" OtherKey="UserName" Type="Category" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Categories" Member="Categories">
+    <Type Name="Category">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CatName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Category_FileToCategory" Member="FileToCategories" ThisKey="Id" OtherKey="CatId" Type="FileToCategory" />
+      <Association Name="Category_User" Member="Users" ThisKey="UserName" OtherKey="userName" Type="User" />
+    </Type>
+  </Table>
+  <Table Name="dbo.sharedContent" Member="sharedContents">
+    <Type Name="sharedContent">
+      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="fileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="User_sharedContent" Member="User" ThisKey="userId" OtherKey="userID" Type="User" IsForeignKey="true" />
+      <Association Name="filesTable_sharedContent" Member="filesTable" ThisKey="fileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

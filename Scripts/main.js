@@ -9,7 +9,19 @@
         $(this).addClass('active');
     });
 
-    $('.sharedContent').click(function() {
+    $('.sharedContent').click(function () {
+        $.ajax({
+            url: "/Home/GetSharedContent",
+            type: "POST",
+            success: function (data) {
+                $('#sharedContent').empty();
+                $('#sharedContent').append(data);
+            },
+            error: function () {
+                showMessage("Something went wrong!");
+            }
+
+        });
         $('#sharedContent').show();
         $('#myContent').hide();
     });
@@ -58,6 +70,10 @@
     $('body').on('click', '#filesSection .shareTpl_Item', function () {
         $(this).find('div.shareTpl_hover').toggleClass('checked');
     });
+    
+    $('body').on('click', '#userSection .row', function () {
+        $(this).children('.userSearchHover').toggleClass('checked');
+    });
 
     $('body').on('click', '#shareContent', function () {
         $.ajax({
@@ -71,11 +87,90 @@
                 $('#filesSection').append(data);
             }
         });
+        $.ajax({
+            url: "/Home/UserSearch",
+            type: "POST",
+            data: {
+                type: "share",
+                str: ""
+            },
+            success: function (data) {
+                $('#userSection #userSearchResult').empty();
+                $('#userSection #userSearchResult').append(data);
+            }
+        });
         showModal("#shareContentWrapper");
+    });
+
+    $('body').on('click', '#shareContentButton', function () {
+        var filesId = new Array();
+        var usersId = new Array();
+        $('#filesSection .shareTpl_hover.checked').each(function() {
+            filesId.push($(this).attr('data-id'));
+        });
+        $('#userSection .userSearchHover.checked').each(function () {
+            usersId.push($(this).parent().attr('user-id'));
+        });
+
+        $.ajax({
+            url: "/Home/ShareContent",
+            type: "POST",
+            data: {
+                'files' : filesId.join(),
+                'users' : usersId.join()
+            },
+            success: function (data) {
+                if (data.result) closeModal('#shareContentWrapper');
+                showMessage(data.message);
+            }
+        });
     });
     
     $('body').on('click', '#userAvatar', function () {
         showModal("#avatarUploadWrapper");
+    });
+    
+    $('#avatarForm').ajaxForm({
+        success: function(data) {
+            if (data.result) {
+                $('#avatarUploadContent #avatar_big').attr("src", data.avatar);
+                $('#userAvatar img').attr("src", data.avatar);
+        }
+            else showMessage(data.message);
+        }
+    });
+
+    $('body').on('change', '#avatarUploadContent #avatar_input', function () {
+        $('#submitAvatarUpload').click();
+    });
+    
+    $('body').on('keyup', '#shareContentWrapper #userShareInput', function () {
+        $.ajax({
+            url: "/Home/UserSearch",
+            type: "POST",
+            data: {
+                type: "share",
+                str: $('#userSection #userShareInput').val()
+            },
+            success: function (data) {
+                $('#userSection #userSearchResult').empty();
+                $('#userSection #userSearchResult').append(data);
+            }
+        });
+    });
+    
+    $('body').on('click', '#avatarUploadContent button.btn-danger', function () {
+        $.ajax({
+            url: "/Home/DeleteAvatar",
+            type: "POST",
+            success: function (data) {
+                if (data.result) {
+                    $('#avatarUploadContent img').attr("src", "").attr("src", data.avatar);
+                    $('#userAvatar img').attr("src", "").attr("src", data.avatar);
+                }
+                showMessage(data.message);
+            }
+        });
     });
     
     $('body').on('click', '.docCategory a.addCatToFile', function () {
@@ -105,7 +200,8 @@
         });
     });
 
-    $('body').on('click', '.deleteDoc', function() {
+    $('body').on('click', '.deleteDoc', function () {
+        var item = $(this).parent().parent().parent().parent();
         if(confirm("Are you sure?")){
         $.ajax({
             url: "/Home/DeleteFile",
@@ -114,7 +210,7 @@
                 id: $(this).parent().attr('document-id')
             },
             success: function (data) {
-                if(data.result)refreshGrid();
+                if(data.result)item.remove();
                 showMessage(data.message);
             }
         });

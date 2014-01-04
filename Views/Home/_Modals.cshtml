@@ -5,7 +5,7 @@
      <form id="myForm" action="/Home/AddFile" method="POST">
     <input type="text" id="fileName" name="fileName" class="form-control" placeholder="Name">
     <input type="text" id="fileDescription" name="fileDescription" class="form-control" placeholder="Description">
-    <input type="file" id="file" name="files" class="form-control" required value="Select file"/>
+    <input type="file" id="file" name="files" class="form-control" required multiple value="Select file"/>
     <input type="text" style="display: none;" id="categories" name="categories"/>
     <label>Select categories</label><br/>
     <div class="categoriesList">
@@ -46,8 +46,13 @@
 <div id="shareContentWrapper" class="modalWindow">
     <div id="modalHeader">Share your content<span>X</span></div>
     <div id="filesSection">
-        
     </div>
+    <div id="userSection">
+        <label>Type username</label>
+        <input type="text" class="form-control" id="userShareInput" placeholder="Type here...">
+        <div id="userSearchResult"></div>
+    </div>
+    <button id="shareContentButton" type="button" class="btn btn-default pull-right">Share!</button>
 </div>
 
 <div id="messageBox">
@@ -56,5 +61,13 @@
 
 <div id="avatarUploadWrapper" class="modalWindow">
     <div id="modalHeader">Upload avatar<span>X</span></div>
-    <img src="@Url.Action("GetAvatar", "Home" ,new {  } )"/>
+    <div id="avatarUploadContent">
+            <img id="avatar_big" src="@Url.Action("GetAvatar", "Home" ,new { avatarType = "currentUser", nameOfUser = "null" } )"/><br/>
+            <form id="avatarForm" action="/Home/UploadAvatar" method="POST">
+                <input id="avatar_input" name="avatar_input" type="file"/>
+                <input id="submitAvatarUpload" type="submit" style="display:none;"/>
+            </form>
+        <button type="button" class="btn btn-success">Select new avatar</button>
+        <button type="button" class="btn btn-danger">Delete</button>
+    </div>
 </div>
