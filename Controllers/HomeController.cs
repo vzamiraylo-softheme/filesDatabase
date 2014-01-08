@@ -492,6 +492,41 @@ namespace filesDatabase.Controllers
             return PartialView("_SharedList", files);
         }
 
+        [HttpPost]
+        public ActionResult deleteAllFiles()
+        {
+            try
+            {
+                var files = _db.filesTables.Where(x => x.userName == GetUsername()).ToList();
+                var categories = _db.Categories.Where(x => x.UserName == GetUsername()).ToList();
+                foreach (var category in categories)
+                {
+                    _db.Categories.DeleteOnSubmit(category);
+                }
+                foreach (var file in files)
+                {
+                    var intersectionRecords = _db.FileToCategories.Where(x => x.FileId == file.id).ToList();
+                    var sharedRecords = _db.sharedContents.Where(x => x.fileId == file.id).ToList();
+                    foreach (var field in sharedRecords)
+                    {
+                        _db.sharedContents.DeleteOnSubmit(field);
+                    }
+                    foreach (var intersectionRecord in intersectionRecords)
+                    {
+                        _db.FileToCategories.DeleteOnSubmit(intersectionRecord);
+                    }
+                    _db.filesTables.DeleteOnSubmit(file);
+                }
+                _db.SubmitChanges();
+
+                return Json(new {result = true, message = "All your files deleted!"});
+            }
+            catch
+            {
+                return Json(new { result = false, message = "Somwthing went wrong!" });
+            }
+        }
+
     [HttpPost]
     public ActionResult ShareContent(string files, string users)
     {

@@ -141,6 +141,23 @@
     $('#avatar_big').click(function () {
         $('#avatar_input').trigger('click');
     });
+
+    $('#deleteAllButton').click(function()
+    {
+        if (confirm("Are you sure to delete all your content? (Files, Groups)")) {
+            $.ajax({
+                url: "/Home/deleteAllFiles",
+                type: "POST",
+                success: function (data) {
+                    if (data.result) {
+                        $('#grid .row').empty();
+                        $('.categoriesListItem').remove();
+                    }
+                    showMessage(data.message);
+                }
+            });
+        }
+    });
     
     $('#avatarForm').ajaxForm({
         success: function(data) {
@@ -324,7 +341,7 @@ function GetCategories() {
         },
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                var listItem = '<li><a class="category" href="#" category-id="' + data[i].id + '">' + data[i].catName + '</a><span class="renameCategory">rename</span><span class="deleteCategory">x</span></li>';
+                var listItem = '<li class="categoriesListItem"><a class="category" href="#" category-id="' + data[i].id + '">' + data[i].catName + '</a><span class="renameCategory">rename</span><span class="deleteCategory">x</span></li>';
                 $(".filesCategories ul").append(listItem);
 
             }
