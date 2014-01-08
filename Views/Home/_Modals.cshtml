@@ -62,7 +62,7 @@
 <div id="avatarUploadWrapper" class="modalWindow">
     <div id="modalHeader">Upload avatar<span>X</span></div>
     <div id="avatarUploadContent">
-            <img id="avatar_big" src="@Url.Action("GetAvatar", "Home" ,new { avatarType = "currentUser", nameOfUser = "null" } )"/><br/>
+            <img id="avatar_big" class="img-circle" src="@Url.Action("GetAvatar", "Home" ,new { avatarType = "currentUser", nameOfUser = "null" } )"/><br/>
             <form id="avatarForm" action="/Home/UploadAvatar" method="POST">
                 <input id="avatar_input" name="avatar_input" type="file"/>
                 <input id="submitAvatarUpload" type="submit" style="display:none;"/>

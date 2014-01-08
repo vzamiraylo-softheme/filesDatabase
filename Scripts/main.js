@@ -129,6 +129,18 @@
     $('body').on('click', '#userAvatar', function () {
         showModal("#avatarUploadWrapper");
     });
+
+    $('#avatar_big').mouseenter(function() {
+        $(this).toggleClass('img-circle');
+    });
+    
+    $('#avatar_big').mouseleave(function () {
+        $(this).toggleClass('img-circle');
+    });
+    
+    $('#avatar_big').click(function () {
+        $('#avatar_input').trigger('click');
+    });
     
     $('#avatarForm').ajaxForm({
         success: function(data) {

@@ -1012,9 +1012,11 @@ namespace filesDatabase.Models
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _userId;
+		private int _Id;
 		
 		private int _fileId;
+		
+		private int _userId;
 		
 		private EntityRef<User> _User;
 		
@@ -1024,10 +1026,12 @@ namespace filesDatabase.Models
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnuserIdChanging(int value);
-    partial void OnuserIdChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnfileIdChanging(int value);
     partial void OnfileIdChanged();
+    partial void OnuserIdChanging(int value);
+    partial void OnuserIdChanged();
     #endregion
 		
 		public sharedContent()
@@ -1037,26 +1041,22 @@ namespace filesDatabase.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userId", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int userId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
-				return this._userId;
+				return this._Id;
 			}
 			set
 			{
-				if ((this._userId != value))
+				if ((this._Id != value))
 				{
-					if (this._User.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnuserIdChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
-					this._userId = value;
-					this.SendPropertyChanged("userId");
-					this.OnuserIdChanged();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -1081,6 +1081,30 @@ namespace filesDatabase.Models
 					this._fileId = value;
 					this.SendPropertyChanged("fileId");
 					this.OnfileIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_userId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int userId
+		{
+			get
+			{
+				return this._userId;
+			}
+			set
+			{
+				if ((this._userId != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnuserIdChanging(value);
+					this.SendPropertyChanging();
+					this._userId = value;
+					this.SendPropertyChanged("userId");
+					this.OnuserIdChanged();
 				}
 			}
 		}

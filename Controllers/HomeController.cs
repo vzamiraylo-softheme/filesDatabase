@@ -487,7 +487,7 @@ namespace filesDatabase.Controllers
 
             var files = (from x in _db.sharedContents
                          where x.userId == currentUserId
-                         select x).ToList();
+                         select x).OrderByDescending(x => x.Id).ToList();
 
             return PartialView("_SharedList", files);
         }

@@ -45,8 +45,9 @@
   </Table>
   <Table Name="dbo.sharedContent" Member="sharedContents">
     <Type Name="sharedContent">
-      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="fileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="User_sharedContent" Member="User" ThisKey="userId" OtherKey="userID" Type="User" IsForeignKey="true" />
       <Association Name="filesTable_sharedContent" Member="filesTable" ThisKey="fileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
     </Type>
