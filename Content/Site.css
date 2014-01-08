@@ -1116,6 +1116,10 @@ tr.pager td {
     margin: 10px;
 }
 
+#shared_Grid {
+    margin-top: 20px;
+}
+
 #userAvatar {
     position: relative;
     width: 60px;

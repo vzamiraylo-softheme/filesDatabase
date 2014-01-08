@@ -38,7 +38,11 @@
     </div><!--END myContent DIV-->
     
 <div id="sharedContent" class="hideTab">
-    
+    <div class="btn-group">
+        <button id="RefreshShared" type="button" class="btn btn-default">Refresh</button>
+        <button id="deleteAllSharedButton" type="button" class="btn btn-danger">Delete all</button>
+    </div>
+    <div id="shared_Grid"></div>
 </div><!--END sharedContent DIV-->
 
 @Html.Partial("_Modals")

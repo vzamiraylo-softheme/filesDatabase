@@ -9,13 +9,13 @@
         $(this).addClass('active');
     });
 
-    $('.sharedContent').click(function () {
+    $('.sharedContent, #RefreshShared').click(function () {
         $.ajax({
             url: "/Home/GetSharedContent",
             type: "POST",
             success: function (data) {
-                $('#sharedContent').empty();
-                $('#sharedContent').append(data);
+                $('#sharedContent #shared_Grid ').empty();
+                $('#sharedContent #shared_Grid').append(data);
             },
             error: function () {
                 showMessage("Something went wrong!");
@@ -159,6 +159,21 @@
         }
     });
     
+    $('#deleteAllSharedButton').click(function () {
+        if (confirm("Are you sure to delete all your content? (Files, Groups)")) {
+            $.ajax({
+                url: "/Home/deleteAllSharedFiles",
+                type: "POST",
+                success: function (data) {
+                    if (data.result) {
+                        $('#shared_Grid').empty();
+                    }
+                    showMessage(data.message);
+                }
+            });
+        }
+    });
+    
     $('#avatarForm').ajaxForm({
         success: function(data) {
             if (data.result) {
@@ -244,6 +259,23 @@
             }
         });
     }
+    });
+    
+    $('body').on('click', '.deleteSharedDoc', function () {
+        var item = $(this).parent().parent().parent().parent();
+        if (confirm("Are you sure?")) {
+            $.ajax({
+                url: "/Home/DeleteSharedFile",
+                type: "POST",
+                data: {
+                    id: $(this).parent().attr('document-id')
+                },
+                success: function (data) {
+                    if (data.result) item.remove();
+                    showMessage(data.message);
+                }
+            });
+        }
     });
     
     $('body').on('click', '#addCatToFile', function () {

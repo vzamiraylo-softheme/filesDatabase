@@ -27,7 +27,7 @@
               </div>*@
               
           </p>
-        <p document-id="@item.filesTable.id"><button href="#" class="btn btn-primary viewLargeView" role="button">@Html.ActionLink("View", "LargeView", "Home", new { @item.filesTable.id }, new { @class = "largeViewLink" })</button></p>
+        <p document-id="@item.filesTable.id"><button href="#" class="btn btn-primary viewLargeView" role="button">@Html.ActionLink("View", "LargeView", "Home", new { @item.filesTable.id }, new { @class = "largeViewLink" })</button><a href="#" class="btn btn-default deleteSharedDoc" role="button">Delete</a></p>
       </div>
     </div>
   </div>

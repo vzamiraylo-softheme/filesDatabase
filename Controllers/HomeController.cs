@@ -47,6 +47,18 @@ namespace filesDatabase.Controllers
             }
         }
 
+        public int GetUserId()
+        {
+            try
+            {
+                return _db.Users.FirstOrDefault(x => x.userName == GetUsername()).userID;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public List<userFile> GenerateUserFileModels(List<filesTable> files)
         {
             
@@ -391,7 +403,12 @@ namespace filesDatabase.Controllers
             if (file != null)
             {
                 _db.filesTables.DeleteOnSubmit(file);
-                _db.SubmitChanges();
+
+                var sharedRecords = _db.sharedContents.Where(x => x.fileId == file.id).ToList();
+                foreach (var item in sharedRecords)
+                {
+                    _db.sharedContents.DeleteOnSubmit(item);
+                }
 
                 var intersections = from x in _db.FileToCategories
                                     where x.FileId == id
@@ -408,6 +425,19 @@ namespace filesDatabase.Controllers
             else{
                 return Json(new { message = " Something went wrong! ", result = false });
             }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult DeleteSharedFile(int id)
+        {
+            var file = _db.sharedContents.FirstOrDefault(x => x.userId == GetUserId() && x.fileId == id);
+            _db.sharedContents.DeleteOnSubmit(file);
+
+            _db.SubmitChanges();
+
+            return Json(new { message = " File deleted! ", result = true });
+            
         }
 
         [Authorize]
@@ -519,6 +549,25 @@ namespace filesDatabase.Controllers
                 }
                 _db.SubmitChanges();
 
+                return Json(new {result = true, message = "All your files deleted!"});
+            }
+            catch
+            {
+                return Json(new { result = false, message = "Somwthing went wrong!" });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult deleteAllSharedFiles()
+        {
+            try
+            {
+                var files = _db.sharedContents.Where(x => x.userId == GetUserId()).ToList();
+                foreach (var file in files)
+                {
+                    _db.sharedContents.DeleteOnSubmit(file);
+                }
+                _db.SubmitChanges();
                 return Json(new {result = true, message = "All your files deleted!"});
             }
             catch
