@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #fff;
+    background-color: #B2B2B2;
     /*border-top: solid 10px #000;*/
     color: #333;
     font-size: .85em;
@@ -29,6 +29,14 @@ a {
 
     a:hover {
         background-color: #c7d1d6;
+    }
+
+    header {
+        background: #333;
+        z-index: 1;
+        position: fixed;
+        width: 100%;
+        height: 60px;
     }
 
 header, footer, hgroup,
@@ -106,12 +114,13 @@ header .content-wrapper, footer .content-wrapper {
     background-color: #efeeef;
     clear: both;
     padding-bottom: 35px;
+    padding-top: 60px;
 }
 
     .main-content {
-        background: url("../Images/accent.png") no-repeat;
+        /*background: url("../Images/accent.png") no-repeat;*/
         padding-left: 10px;
-        padding-top: 30px;
+        padding-top: 10px;
     }
 
     .featured + .main-content {
@@ -119,7 +128,7 @@ header .content-wrapper, footer .content-wrapper {
     }
 
 header .content-wrapper {
-    padding-top: 20px; 
+
 }
 
 footer {
@@ -137,11 +146,12 @@ footer {
     font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
     font-size: 2.3em;
     margin: 0;
+    margin-top: 7px;
 }
 
 .site-title a, .site-title a:hover, .site-title a:active {
     background: none;
-    color: #c8c8c8;
+    color: #FAF2D4;
     outline: none;
     text-decoration: none;
 }
@@ -151,17 +161,22 @@ footer {
 ----------------------------------------------------------*/
 #login {
     display: block;
-    font-size: .85em;
-    margin: 0 0 10px;
+    color: #faf2d4;
+    margin-top: 20px;
     text-align: right;
 }
 
     #login a {
-        background-color: #d3dce0;
+        color: #FAF2D4;
         margin-left: 10px;
         margin-right: 3px;
         padding: 2px 3px;
         text-decoration: none;
+    }
+
+    #login form a {
+        background-color: #faf2d4;
+        color: #333;
     }
 
     #login a.username {
@@ -760,11 +775,12 @@ tr.pager td {
 }
 
 #grid {
-    margin-top:20px
+    margin-top: 10px;
+    margin-left: -5px;
 }
 
 #grid .row {
-    margin-right: 0px;
+    margin: 0;
 }
 
 .selected {
@@ -1001,8 +1017,7 @@ tr.pager td {
 }
 
 .item .thumbnail>img, .thumbnail a>img{
-    height: 150px;
-    width: auto;
+    max-height: 150px;
 }
 
 .tileName {
@@ -1042,8 +1057,8 @@ tr.pager td {
 }
 
 .largeImage {
-    width: 400px;
-    height: auto;
+    max-width: 850px;
+    max-height: 450px;
 }
 
 .categoriesList {
@@ -1108,12 +1123,16 @@ tr.pager td {
     display: none;
 }
 
-.content-wrapper .tabs {
-    margin-bottom: 15px;
+#myContent .btn-group {
+    margin-top: 10px;
+}
+
+#myContent #grid .btn-group {
+    margin-top: 0;
 }
 
 #shareContent {
-    margin: 10px;
+    margin: 0 10px;
 }
 
 #shared_Grid {
