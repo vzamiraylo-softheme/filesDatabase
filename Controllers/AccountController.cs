@@ -112,16 +112,35 @@ namespace filesDatabase.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterModel model)
+        public ActionResult Register(User model)
         {
             if (ModelState.IsValid)
             {
                 // Attempt to register the user
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
-                    WebSecurity.Login(model.UserName, model.Password);
-                    return RedirectToAction("Index", "Home");
+                    if (model.userName != null && model.userEmail != null && model.password != null)
+                    {
+                        using (FilesDatabaseClass1DataContext _db = new FilesDatabaseClass1DataContext())
+                        {
+                            var NameIsNew = _db.Users.Any(x => x.userName == model.userName);
+                            var EmailIsNew = _db.Users.Any(x => x.userEmail == model.userEmail);
+                            if (NameIsNew == false && EmailIsNew == false)
+                            {
+                                User newUser = new User
+                                    {
+                                        userName = model.userName,
+                                        password = model.password,
+                                        userEmail = model.userEmail
+                                    };
+                                _db.Users.InsertOnSubmit(newUser);
+                                _db.SubmitChanges();
+                                Login(model, "");
+                            }
+                        }
+                        return RedirectToAction("Index", "Home");
+                    }
+                    
                 }
                 catch (MembershipCreateUserException e)
                 {

@@ -17,8 +17,8 @@ body {
 a {
     color: #333;
     outline: none;
-    padding-left: 3px;
-    padding-right: 3px;
+    /*padding-left: 3px;
+    padding-right: 3px;*/
     text-decoration: underline;
 }
 
@@ -28,7 +28,7 @@ a {
     }
 
     a:hover {
-        background-color: #c7d1d6;
+        /*background-color: #c7d1d6;*/
     }
 
     header {
@@ -113,8 +113,8 @@ header .content-wrapper, footer .content-wrapper {
 #body {
     background-color: #efeeef;
     clear: both;
-    padding-bottom: 35px;
     padding-top: 60px;
+    padding-bottom: 30px;
 }
 
     .main-content {
@@ -132,10 +132,14 @@ header .content-wrapper {
 }
 
 footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     clear: both;
-    background-color: #e2e2e2;
+    background-color: #1d1d1d;
+    color: #FAF2D4;
     font-size: .8em;
-    height: 100px;
+    height: 30px;
 }
 
 
@@ -1018,6 +1022,59 @@ tr.pager td {
 
 .item .thumbnail>img, .thumbnail a>img{
     max-height: 150px;
+    cursor: pointer;
+}
+
+.item .caption {
+    width: 98%;
+    height: 98%;
+    opacity: 0; 
+    position: absolute;
+    color: white;
+    cursor: pointer;
+    text-shadow: 1px 1px 0 black;
+}
+
+.item .caption center {
+    margin-top: 40px;
+}
+
+.item .caption:hover {
+    opacity:1;
+}
+
+.moreItemActions {
+    position: absolute !important;
+    right: 10px;
+    bottom: 15px;
+}
+
+#grid .thumbnail, #shared_Grid .thumbnail {
+    height: 190px;
+}
+
+.itemCaptionHover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.itemOwner {
+    position: absolute;
+    bottom: 15px;
+    left: 10px;
+}
+
+.itemOwner h6 {
+    margin-bottom: 0;
+}
+
+.caption h4, .caption h6 {
+    z-index: 1;
 }
 
 .tileName {
@@ -1049,11 +1106,13 @@ tr.pager td {
 .largeViewLink:hover {
     text-decoration: none;
     background: none;
-    color: white;
+}
+.filesCategoriesDropdown {
+    min-width: 158px;
 }
 
-.largeViewLink{
-    color: white !important;
+.docCategory {
+    margin-left: 18px;
 }
 
 .largeImage {
@@ -1119,7 +1178,7 @@ tr.pager td {
     padding-right: 80px;
 }
 
-.hideTab {
+.hiddenTab {
     display: none;
 }
 
@@ -1128,6 +1187,14 @@ tr.pager td {
 }
 
 #myContent #grid .btn-group {
+    margin-top: 0;
+}
+
+#sharedContent .btn-group {
+    margin-top: 10px;
+}
+
+#sharedContent #shared_Grid .btn-group {
     margin-top: 0;
 }
 
@@ -1190,4 +1257,22 @@ tr.pager td {
     margin-top: 10px;
     position: relative;
     overflow-y: auto;
+}
+
+.large_view_modal_wrapper {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: center;
+}
+
+.largeViewImage {
+    /*max-height: 100%;
+    max-width: 100%;*/
+}
+
+.fancybox-wrap a:hover {
+    /*background: none;*/
 }

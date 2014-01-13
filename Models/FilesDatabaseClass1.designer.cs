@@ -45,6 +45,9 @@ namespace filesDatabase.Models
     partial void InsertsharedContent(sharedContent instance);
     partial void UpdatesharedContent(sharedContent instance);
     partial void DeletesharedContent(sharedContent instance);
+    partial void Insertsubscriber(subscriber instance);
+    partial void Updatesubscriber(subscriber instance);
+    partial void Deletesubscriber(subscriber instance);
     #endregion
 		
 		public FilesDatabaseClass1DataContext() : 
@@ -114,6 +117,14 @@ namespace filesDatabase.Models
 			get
 			{
 				return this.GetTable<sharedContent>();
+			}
+		}
+		
+		public System.Data.Linq.Table<subscriber> subscribers
+		{
+			get
+			{
+				return this.GetTable<subscriber>();
 			}
 		}
 	}
@@ -1173,6 +1184,92 @@ namespace filesDatabase.Models
 						this._fileId = default(int);
 					}
 					this.SendPropertyChanged("filesTable");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.subscribers")]
+	public partial class subscriber : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _subscriberId;
+		
+		private int _subscribedToId;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnsubscriberIdChanging(int value);
+    partial void OnsubscriberIdChanged();
+    partial void OnsubscribedToIdChanging(int value);
+    partial void OnsubscribedToIdChanged();
+    #endregion
+		
+		public subscriber()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_subscriberId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int subscriberId
+		{
+			get
+			{
+				return this._subscriberId;
+			}
+			set
+			{
+				if ((this._subscriberId != value))
+				{
+					this.OnsubscriberIdChanging(value);
+					this.SendPropertyChanging();
+					this._subscriberId = value;
+					this.SendPropertyChanged("subscriberId");
+					this.OnsubscriberIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_subscribedToId", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int subscribedToId
+		{
+			get
+			{
+				return this._subscribedToId;
+			}
+			set
+			{
+				if ((this._subscribedToId != value))
+				{
+					this.OnsubscribedToIdChanging(value);
+					this.SendPropertyChanging();
+					this._subscribedToId = value;
+					this.SendPropertyChanged("subscribedToId");
+					this.OnsubscribedToIdChanged();
 				}
 			}
 		}

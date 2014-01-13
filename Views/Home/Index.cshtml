@@ -7,27 +7,40 @@
     <ul class="nav nav-tabs tabs">
         <li class="myContent active"><a href="#">My content</a></li>
         <li class="sharedContent"><a href="#">Shared content</a></li>
+        <li class="newsTab"><a href="#">News</a></li>
+        <li class="newsTab"><a href="#">Search</a></li>
         <button id="shareContent" type="button" class="btn btn-default pull-right">Share Content</button>
     </ul>
     
     <div id="myContent">
-        
-        <div class="btn-group">
-            <button id="uploadFile" type="button" class="btn btn-default">Upload Content</button>
-            <button id="deleteAllButton" type="button" class="btn btn-danger">Delete all</button>
-        </div>
+        <div id="actionButtons">
+            <div id="myContentButtons">
+                <div class="btn-group">
+                    <button id="uploadFile" type="button" class="btn btn-default">Upload Content</button>
+                    <button id="deleteAllButton" type="button" class="btn btn-danger">Delete all</button>
+                </div>
         
   
-        <div class="btn-group filesCategories">
-            <button type="button" class="btn btn-primary">All</button>
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu pull-right" role="menu">
+                <div class="btn-group filesCategories">
+                    <button type="button" class="btn btn-primary">All</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
         
-            </ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="sharedContentButtons" class="hiddenTab">
+                <div class="btn-group">
+                    <button id="RefreshShared" type="button" class="btn btn-default">Refresh</button>
+                    <button id="deleteAllSharedButton" type="button" class="btn btn-danger">Delete all</button>
+                </div>
+            </div>
         </div>
+        
 
         <div id="grid">
             <div class="row">
@@ -36,14 +49,6 @@
         </div>
         
     </div><!--END myContent DIV-->
-    
-<div id="sharedContent" class="hideTab">
-    <div class="btn-group">
-        <button id="RefreshShared" type="button" class="btn btn-default">Refresh</button>
-        <button id="deleteAllSharedButton" type="button" class="btn btn-danger">Delete all</button>
-    </div>
-    <div id="shared_Grid"></div>
-</div><!--END sharedContent DIV-->
 
 @Html.Partial("_Modals")
 

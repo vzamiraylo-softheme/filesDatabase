@@ -3,37 +3,45 @@
 @foreach (var item in Model)
     {
     
-  <div class="col-sm-3 col-md-2 item">
-    <div class="thumbnail">
-      <img class="thumbImage" src="@Url.Action("GetImage", "Home" ,new { @item.file.id } )" alt="">
-      <div class="caption">
-          <center>
-              <h4>@Html.DisplayFor(modelItem => item.file.fileName)</h4>
-              <h5>@Html.DisplayFor(modelItem => item.file.fileDescription)</h5>
-          </center>
-              <h6>@Html.DisplayFor(modelItem => item.file.userName)</h6>
-          <p class="categoryName">
+        <div class="col-sm-3 col-md-2 item">
+            <div class="caption">
+                      <div class="itemCaptionHover" document-id="@item.file.id"></div>
+                      <center>
+                          <h4>@Html.DisplayFor(modelItem => item.file.fileName)</h4>
+                          <h5>@Html.DisplayFor(modelItem => item.file.fileDescription)</h5>
+                      </center>
+                  </div>
+            <div class="thumbnail">
+                <img class="thumbImage" src="@Url.Action("GetImage", "Home" ,new { @item.file.id } )" alt="">
+                <span class="itemOwner"><h6>@Html.DisplayFor(modelItem => item.file.userName)</h6></span>
+                <div class="btn-group float-right moreItemActions">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li>@Html.ActionLink("View on page", "LargeView", "Home", new { @item.file.id }, new { @class = "largeViewLink" })</li>
+                        <li><a href="#" document-id="@item.file.id" class="deleteDoc" role="button">Delete</a></li>
+                        <li><div class="btn-group docCategory">
+                                <button type="button" class="btn btn-primary" style="font-size: 10px;">Categories</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" style="font-size: 10px;" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu filesCategoriesDropdown" role="menu" doc-id="@Html.DisplayFor(x => item.file.id)">
+                                    @foreach (var category in item.categoriesForFile)
+                                    {
+                                        <li><a>@Html.DisplayFor(modelItem => category.CatName)</a><span class="deleteFileCategory" cat-id="@Html.DisplayFor(x => category.Id)" >x</span></li>
+                                    }
+                                    <li><a class="borderTop addCatToFile"  href="#">Add new</a></li>
+                                </ul>
+                            </div></li>
+                    </ul>
+                </div>
+
+                <p class="categoryName">
               
-              <div class="btn-group docCategory">
-                  <button type="button" class="btn btn-primary" style="font-size: 10px;">Categories</button>
-                  <button type="button" class="btn btn-primary dropdown-toggle" style="font-size: 10px;" data-toggle="dropdown">
-                      <span class="caret"></span>
-                      <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu" doc-id="@Html.DisplayFor(x => item.file.id)">
-                    @foreach (var category in item.categoriesForFile)
-                        {
-                            <li><a>@Html.DisplayFor(modelItem => category.CatName)</a><span class="deleteFileCategory" cat-id="@Html.DisplayFor(x => category.Id)" >x</span></li>
-                        }
-                      <li><a class="borderTop addCatToFile"  href="#">Add new</a></li>
-                  </ul>
-              </div>
-              
-          </p>
-        <p document-id="@item.file.id"><button href="#" class="btn btn-primary viewLargeView" role="button">@Html.ActionLink("View", "LargeView", "Home", new { @item.file.id }, new { @class = "largeViewLink" })</button> <a href="#" class="btn btn-default deleteDoc" role="button">Delete</a></p>
-      </div>
-    </div>
-  </div>
+                </p>
+            </div>
+        </div>
     
 
     }

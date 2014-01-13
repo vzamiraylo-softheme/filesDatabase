@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Web;
@@ -25,14 +26,8 @@ namespace filesDatabase.Controllers
         {
             //WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "Id", "Name", autoCreateTables: true);
             //ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
-
-            username = GetUsername();
-
-            var files = (from x in _db.filesTables
-                         where x.userName == username
-                         select x).OrderByDescending(x => x.id).ToList();
-
-            return View(GenerateUserFileModels(files));
+            List<userFile> files = new List<userFile>();
+            return View(files);
         }
 
         public string GetUsername()
@@ -93,8 +88,8 @@ namespace filesDatabase.Controllers
 
                             filesTable newModel = new filesTable
                                 {
-                                    fileName = fileName == "" ? "Unknown" : fileName,
-                                    fileDescription = fileDescription == "" ? "Unknown" : fileDescription,
+                                    fileName = fileName == "" ? "Unknown name" : fileName,
+                                    fileDescription = fileDescription == "" ? "No description" : fileDescription,
                                     filePath = physicalPath,
                                     userName = GetUsername()
                                 };
@@ -151,6 +146,15 @@ namespace filesDatabase.Controllers
             filesTable file = _db.filesTables.FirstOrDefault(x => x.id == id);
             byte[] array = System.IO.File.ReadAllBytes(file.filePath);
             return new FileContentResult(array, "image/jpeg");
+        }
+
+        [HttpPost]
+        public ActionResult ajaxLargeView(int id)
+        {
+            var file = _db.filesTables.FirstOrDefault(x => x.id == id);
+
+
+            return PartialView("_AjaxLargeView", file);
         }
 
 

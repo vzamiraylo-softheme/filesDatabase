@@ -1,12 +1,36 @@
 ﻿$(document).ready(function () {
     var categoriesToAdd = new Array;
-    
-    
+
     GetCategories();
+    GetFilesForCategory(-1);
 
     $('body').on('click', '.nav-tabs li', function() {
         $('.active').removeClass('active');
         $(this).addClass('active');
+    });
+    
+    $('body').on('click', '.itemCaptionHover', function () {
+        //$(this).closest('.item').find('.fancybox').trigger('click');
+        $.ajax({
+            url: "/Home/ajaxLargeView",
+            type: "POST",
+            data : {
+                id : $(this).attr('document-id')
+            },
+            success: function (data) {
+                $.fancybox({
+                    padding : 0,
+                    content: data
+                    //width : '90%',
+                    //height: '90%',
+                    //autoSize : false
+                });
+            },
+            error: function () {
+                showMessage("Something went wrong!");
+            }
+
+        });
     });
 
     $('.sharedContent, #RefreshShared').click(function () {
@@ -14,43 +38,32 @@
             url: "/Home/GetSharedContent",
             type: "POST",
             success: function (data) {
-                $('#sharedContent #shared_Grid ').empty();
-                $('#sharedContent #shared_Grid').append(data);
+                $('#grid .row').empty();
+                $('#grid .row').append(data);
+
+                $('#actionButtons #myContentButtons').hide();
+                $('#actionButtons #sharedContentButtons').show();
             },
             error: function () {
                 showMessage("Something went wrong!");
             }
 
         });
-        $('#sharedContent').show();
-        $('#myContent').hide();
     });
     
     $('.myContent').click(function () {
-        $('#myContent').show();
-        $('#sharedContent').hide();
+        GetFilesForCategory(-1);
+        $('#actionButtons #myContentButtons').show();
+        $('#actionButtons #sharedContentButtons').hide();
     });
 
     $('body').on('click', '.filesCategories li a.category', function() {
         var $this = $(this);
         $('.filesCategories li a.selected').removeClass('selected');
         $this.addClass('selected');
-        $.ajax({
-            url: "/Home/GetChannelByCategory",
-            type: "POST",
-            data: {
-                catId :  $this.attr('category-id')
-            },
-            success: function (data) {
-                $('.filesCategories button:first').text($this.text());
-                $('#grid').empty();
-                $('#grid').append(data);
-            },
-            error: function (){
-                showMessage("Something went wrong!");
-            }
-
-        });
+        $('.filesCategories button:first').text($this.text());
+        GetFilesForCategory($this.attr('category-id'));
+        
     });
     
     $('body').on('click', '#newFileCat_wrapper .categoriesList li', function () {
@@ -166,7 +179,7 @@
                 type: "POST",
                 success: function (data) {
                     if (data.result) {
-                        $('#shared_Grid').empty();
+                        $('#grid .row').empty();
                     }
                     showMessage(data.message);
                 }
@@ -245,13 +258,13 @@
     });
 
     $('body').on('click', '.deleteDoc', function () {
-        var item = $(this).parent().parent().parent().parent();
+        var item = $(this).closest('.item');
         if(confirm("Are you sure?")){
         $.ajax({
             url: "/Home/DeleteFile",
             type: "POST",
             data: {
-                id: $(this).parent().attr('document-id')
+                id: $(this).attr('document-id')
             },
             success: function (data) {
                 if(data.result)item.remove();
@@ -260,15 +273,20 @@
         });
     }
     });
+
+    $('body').on('click', '.item .dropdown-menu button.dropdown-toggle', function(e) {
+        e.stopPropagation();
+        $(this).parent().toggleClass('open');
+    });
     
     $('body').on('click', '.deleteSharedDoc', function () {
-        var item = $(this).parent().parent().parent().parent();
+        var item = $(this).closest('.item');
         if (confirm("Are you sure?")) {
             $.ajax({
                 url: "/Home/DeleteSharedFile",
                 type: "POST",
                 data: {
-                    id: $(this).parent().attr('document-id')
+                    id: $(this).attr('document-id')
                 },
                 success: function (data) {
                     if (data.result) item.remove();
@@ -361,6 +379,24 @@
 
 });
 
+function GetFilesForCategory(id) {
+    $.ajax({
+        url: "/Home/GetChannelByCategory",
+        type: "POST",
+        data: {
+            catId: id
+        },
+        success: function (data) {
+            $('#grid .row').empty();
+            $('#grid .row').append(data);
+        },
+        error: function () {
+            showMessage("Something went wrong!");
+        }
+
+    });
+}
+
 function GetCategories() {
 
     $(".filesCategories ul").empty();
@@ -398,8 +434,8 @@ function refreshGrid() {
             catId: category ? category : -1
         },
         success: function (data) {
-            $('#grid').empty();
-            $('#grid').append(data);
+            $('#grid .row').empty();
+            $('#grid .row').append(data);
         }
     });
 }

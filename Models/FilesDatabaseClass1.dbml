@@ -52,4 +52,10 @@
       <Association Name="filesTable_sharedContent" Member="filesTable" ThisKey="fileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.subscribers" Member="subscribers">
+    <Type Name="subscriber">
+      <Column Name="subscriberId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="subscribedToId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
 </Database>

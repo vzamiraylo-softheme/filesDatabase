@@ -1,4 +1,4 @@
-﻿@model filesDatabase.Models.RegisterModel
+﻿@model filesDatabase.Models.User
 @{
     ViewBag.Title = "Register";
 }
@@ -16,16 +16,19 @@
         <legend>Registration Form</legend>
         <ol>
             <li>
-                @Html.LabelFor(m => m.UserName)
-                @Html.TextBoxFor(m => m.UserName)
+                @Html.LabelFor(m => m.userName)
+                @Html.TextBoxFor(m => m.userName)
+                @Html.ValidationMessageFor(m => m.userName)
             </li>
             <li>
-                @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password)
+                @Html.LabelFor(m => m.password)
+                @Html.PasswordFor(m => m.password)
+                @Html.ValidationMessageFor(m => m.password)
             </li>
             <li>
-                @Html.LabelFor(m => m.ConfirmPassword)
-                @Html.PasswordFor(m => m.ConfirmPassword)
+                @Html.LabelFor(m => m.userEmail)
+                @Html.TextBoxFor(m => m.userEmail)
+                @Html.ValidationMessageFor(m => m.userEmail)
             </li>
         </ol>
         <input type="submit" value="Register" />

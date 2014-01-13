@@ -4,31 +4,24 @@
 @foreach (var item in Model)
     {
     
-  <div class="col-sm-3 col-md-2 item">
+        <div class="col-sm-3 col-md-2 item">
+            <div class="caption">
+                <center>
+                <h4>@Html.DisplayFor(modelItem => item.filesTable.fileName)</h4>
+                <h6>@Html.DisplayFor(modelItem => item.filesTable.fileDescription)</h6>
+                </center>
+            </div>
     <div class="thumbnail">
       <img class="thumbImage" src="@Url.Action("GetImage", "Home" ,new { @item.filesTable.id } )" alt="">
-      <div class="caption">
-          <h4>@Html.DisplayFor(modelItem => item.filesTable.fileName)</h4>
-          <h6>@Html.DisplayFor(modelItem => item.filesTable.fileDescription)</h6>
-          <p class="categoryName">
-              <h6>@Html.DisplayFor(modelItem => item.filesTable.userName)</h6>
-              @*<div class="btn-group docCategory">
-                  <button type="button" class="btn btn-primary" style="font-size: 10px;">Categories</button>
-                  <button type="button" class="btn btn-primary dropdown-toggle" style="font-size: 10px;" data-toggle="dropdown">
-                      <span class="caret"></span>
-                      <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu" doc-id="@Html.DisplayFor(x => item.filesTable.id)">
-                    @foreach (var category in item.filesTable)
-                        {
-                            <li><a>@Html.DisplayFor(modelItem => category.CatName)</a></li>
-                        }
-                  </ul>
-              </div>*@
-              
-          </p>
-        <p document-id="@item.filesTable.id"><button href="#" class="btn btn-primary viewLargeView" role="button">@Html.ActionLink("View", "LargeView", "Home", new { @item.filesTable.id }, new { @class = "largeViewLink" })</button><a href="#" class="btn btn-default deleteSharedDoc" role="button">Delete</a></p>
-      </div>
+      <span class="itemOwner"><h6>@Html.DisplayFor(modelItem => item.filesTable.userName)</h6></span>
+          <div class="btn-group float-right moreItemActions">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li>@Html.ActionLink("View on page", "LargeView", "Home", new { @item.filesTable.id }, new { @class = "largeViewLink" })</li>
+                        <li><a href="#" document-id="@item.filesTable.id" class="deleteSharedDoc" role="button">Delete from inbox</a></li>
+                    </ul>
+                </div>
     </div>
   </div>
     
