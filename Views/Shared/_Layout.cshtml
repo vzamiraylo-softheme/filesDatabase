@@ -15,6 +15,7 @@
         @Scripts.Render("~/Scripts/jquery-ui-1.8.24.js")
         @Scripts.Render("~/Scripts/main.js")
         @Scripts.Render("~/Scripts/share.js")
+        @Scripts.Render("~/Scripts/jquery.subscribe.js")
         @Scripts.Render("~/Scripts/upload.js")
         @Scripts.Render("~/Scripts/bootstrap.min.js")
         @Scripts.Render("~/Scripts/jquery.form.js")
@@ -30,7 +31,7 @@
                     <p class="site-title">@Html.ActionLink("Share", "Index", "Home")</p>
                 </div>
                 <div class="float-right" style="min-width:300px;">
-                    <div id="userAvatar"><img class="img-circle" src="@Url.Action("GetAvatar", "Home" ,new { avatarType = "currentUser", nameOfUser = "null" } )" /></div>
+                    <div id="userAvatar"><img class="img-circle" src="@Url.Action("GetAvatar", "Home", new { avatarType = "currentUser", nameOfUser = "null" })" /></div>
                     <section id="login">
                         @Html.Partial("_LoginPartial")
                     </section>

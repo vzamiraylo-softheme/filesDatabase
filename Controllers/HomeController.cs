@@ -11,6 +11,7 @@ using System.Web.Security;
 using WebMatrix.WebData;
 using filesDatabase.Filters;
 using filesDatabase.Models;
+using System.Data.SqlTypes;
 using System.Net;
 
 namespace filesDatabase.Controllers
@@ -26,8 +27,18 @@ namespace filesDatabase.Controllers
         {
             //WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "Id", "Name", autoCreateTables: true);
             //ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+            UpdateLastSeenOn();
+
             List<userFile> files = new List<userFile>();
             return View(files);
+        }
+
+        public void UpdateLastSeenOn()
+        {
+            DateTime now = DateTime.Now;
+            User currentUser = _db.Users.FirstOrDefault(x => x.userID == GetUserId());
+            currentUser.lastSeenOn = now;
+            _db.SubmitChanges();
         }
 
         public string GetUsername()
@@ -83,6 +94,7 @@ namespace filesDatabase.Controllers
                         if (filename != null)
                         {
                             var physicalPath = Path.Combine(Server.MapPath("~/uploads/files"), filename);
+                            DateTime now = DateTime.Now;
 
                             file.SaveAs(physicalPath);
 
@@ -91,7 +103,9 @@ namespace filesDatabase.Controllers
                                     fileName = fileName == "" ? "Unknown name" : fileName,
                                     fileDescription = fileDescription == "" ? "No description" : fileDescription,
                                     filePath = physicalPath,
-                                    userName = GetUsername()
+                                    userId = GetUserId(),
+                                    userName = GetUsername(),
+                                    uploadTime = now
                                 };
                             _db.filesTables.InsertOnSubmit(newModel);
                             _db.SubmitChanges();
@@ -277,13 +291,13 @@ namespace filesDatabase.Controllers
             {
                 files = (from x in _db.FileToCategories
                         where x.CatId == catId
-                        where x.filesTable.userName == GetUsername()
+                        where x.filesTable.userId == GetUserId()
                         select x.filesTable).ToList();
             }
             else
             {
                 files = (from x in _db.filesTables
-                         where x.userName == GetUsername()
+                         where x.userId == GetUserId()
                             select x).ToList(); 
             }
 
@@ -298,7 +312,7 @@ namespace filesDatabase.Controllers
             List<filesTable> files;
 
                 files = (from x in _db.filesTables
-                         where x.userName == GetUsername()
+                         where x.userId == GetUserId()
                          select x).ToList();
 
             files.OrderByDescending(x => x.id);
@@ -307,17 +321,76 @@ namespace filesDatabase.Controllers
         }
 
         [HttpPost]
-        public ActionResult UserSearch(string type, string str)
+        public ActionResult subscribeAjax(string type, string userId)
         {
-            /*TODO*/
-            /*if (type == "share")
-            {*/
-                List<User> users = (from x in _db.Users
-                            where x.userName.Contains(str)
-                                    select x).OrderBy(x => x.userName).ToList();
+            try
+            {
+                if (type == "subscribe")
+                {
+                    subscriber subscriber = new subscriber
+                        {
+                            subscribedToId = Int32.Parse(userId),
+                            subscriberId = GetUserId()
+                        };
+                    _db.subscribers.InsertOnSubmit(subscriber);
+                    _db.SubmitChanges();
+                    return Json(new {success = true});
+                }
 
-                return PartialView("_userSearchShare", users);
-            //}
+                if (type == "unsubscribe")
+                {
+                    subscriber row =
+                        _db.subscribers.FirstOrDefault(
+                            x => x.subscriberId == GetUserId() && x.subscribedToId == Int32.Parse(userId));
+                    _db.subscribers.DeleteOnSubmit(row);
+                    _db.SubmitChanges();
+                    return Json(new {success = true});
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Something went wrong" });
+            }
+            return Json(new { success = false, message = "Something went wrong" });
+        }
+
+        [HttpPost]
+        public ActionResult Search(string type, string str)
+        {
+                if (type == "userShare")
+                {
+                    List<User> users = new List<User>();
+
+                    if (str == "")return PartialView("_userSearchShare", users);
+
+                    users = (from x in _db.Users
+                                        where x.userName.Contains(str)
+                                        select x).OrderBy(x => x.userName).ToList();
+
+                    return PartialView("_userSearchShare", users);
+                }
+
+                if (type == "userSearch")
+                {
+                    List<User> allUsers = new List<User>();
+                    List<SearchedUser> users = new List<SearchedUser>();
+
+                    if (str == "") return PartialView("_userSearchTpl", users);
+
+                    allUsers = (from x in _db.Users
+                                        where x.userName.Contains(str)
+                                        select x).OrderBy(x => x.userName).ToList();
+
+                    foreach (var user in allUsers)
+                    {
+                        var isFriend = _db.subscribers.Any(x => x.subscriberId == GetUserId() && x.subscribedToId == user.userID);
+                        users.Add(new SearchedUser(user, isFriend));
+                    }
+
+                    return PartialView("_userSearchTpl", users);
+                }
+
+            return PartialView("_userSearchShare", null);
         }
 
 
@@ -531,7 +604,7 @@ namespace filesDatabase.Controllers
         {
             try
             {
-                var files = _db.filesTables.Where(x => x.userName == GetUsername()).ToList();
+                var files = _db.filesTables.Where(x => x.userId == GetUserId()).ToList();
                 var categories = _db.Categories.Where(x => x.UserName == GetUsername()).ToList();
                 foreach (var category in categories)
                 {
@@ -609,6 +682,32 @@ namespace filesDatabase.Controllers
             return Json(new { result = false, message = "Something went wrong!" });
         }
     }
+
+    [HttpPost]
+    public ActionResult GetNewsAjax(int start = 1, int offset = 10)
+    {
+        List<subscriber> friends = _db.subscribers.Where(x => x.subscriberId == GetUserId()).ToList();
+        List<filesTable> files = new List<filesTable>();
+        foreach (var friend in friends)
+        {
+            List<filesTable> items = _db.filesTables.Where(x => x.userId == friend.subscribedToId).ToList();
+            foreach (var item in items)
+            {
+                files.Add(item);
+            }
+        }
+        List<filesTable> reordered = files.OrderByDescending(x => x.uploadTime).ToList();
+
+        if (files.Count > start + offset) return PartialView("_NewsFileTpl", reordered.GetRange((start-1), offset));
+        if (files.Count < start + offset)
+        {
+            if (start == 1) return PartialView("_NewsFileTpl", reordered);
+            if (start == files.Count) return Json(new { isLast = true });
+            if (start > 1) return PartialView("_NewsFileTpl", reordered.GetRange(start,(files.Count-start)));
+        }
+        return PartialView("_NewsFileTpl", reordered);
+     }
+    
 
         public ActionResult About()
         {

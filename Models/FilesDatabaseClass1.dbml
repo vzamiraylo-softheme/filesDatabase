@@ -4,34 +4,8 @@
     <Type Name="FileToCategory">
       <Column Name="FileId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="CatId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="filesTable_FileToCategory" Member="filesTable" ThisKey="FileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
       <Association Name="Category_FileToCategory" Member="Category" ThisKey="CatId" OtherKey="Id" Type="Category" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.filesTable" Member="filesTables">
-    <Type Name="filesTable">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="fileName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="fileDescription" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="filePath" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="userName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="filesTable_FileToCategory" Member="FileToCategories" ThisKey="id" OtherKey="FileId" Type="FileToCategory" />
-      <Association Name="filesTable_User" Member="Users" ThisKey="userName" OtherKey="userName" Type="User" />
-      <Association Name="filesTable_sharedContent" Member="sharedContents" ThisKey="id" OtherKey="fileId" Type="sharedContent" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Users" Member="Users">
-    <Type Name="User">
-      <Column Name="userID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="userName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="password" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="userEmail" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="role" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="rememberMe" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="avatar" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="User_sharedContent" Member="sharedContents" ThisKey="userID" OtherKey="userId" Type="sharedContent" />
-      <Association Name="filesTable_User" Member="filesTable" ThisKey="userName" OtherKey="userName" Type="filesTable" IsForeignKey="true" />
-      <Association Name="Category_User" Member="Category" ThisKey="userName" OtherKey="UserName" Type="Category" IsForeignKey="true" />
+      <Association Name="filesTable_FileToCategory" Member="filesTable" ThisKey="FileId" OtherKey="id" Type="filesTable" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Categories" Member="Categories">
@@ -56,6 +30,37 @@
     <Type Name="subscriber">
       <Column Name="subscriberId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="subscribedToId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="User">
+      <Column Name="userID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="userName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="userEmail" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="role" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="rememberMe" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="avatar" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="lastSeenOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="User_sharedContent" Member="sharedContents" ThisKey="userID" OtherKey="userId" Type="sharedContent" />
+      <Association Name="Category_User" Member="Category" ThisKey="userName" OtherKey="UserName" Type="Category" IsForeignKey="true" />
+      <Association Name="filesTable_User" Member="filesTable" ThisKey="userID" OtherKey="userId" Type="filesTable" IsForeignKey="true" />
+      <Association Name="filesTable_User1" Member="filesTable1" ThisKey="userName" OtherKey="userName" Type="filesTable" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.filesTable" Member="filesTables">
+    <Type Name="filesTable">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="fileName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="fileDescription" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="filePath" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="userId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="uploadTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Member="userName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="filesTable_FileToCategory" Member="FileToCategories" ThisKey="id" OtherKey="FileId" Type="FileToCategory" />
+      <Association Name="filesTable_sharedContent" Member="sharedContents" ThisKey="id" OtherKey="fileId" Type="sharedContent" />
+      <Association Name="filesTable_User" Member="Users" ThisKey="userId" OtherKey="userID" Type="User" />
+      <Association Name="filesTable_User1" Member="Users1" ThisKey="userName" OtherKey="userName" Type="User" />
     </Type>
   </Table>
 </Database>

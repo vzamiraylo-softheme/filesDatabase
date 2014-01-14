@@ -1,29 +1,26 @@
 ﻿@model List<filesDatabase.Models.sharedContent>
 
-
 @foreach (var item in Model)
-    {
-    
-        <div class="col-sm-3 col-md-2 item">
-            <div class="caption">
-                <center>
+{
+
+    <div class="col-sm-3 col-md-2 item">
+        <div class="caption">
+            <center>
                 <h4>@Html.DisplayFor(modelItem => item.filesTable.fileName)</h4>
                 <h6>@Html.DisplayFor(modelItem => item.filesTable.fileDescription)</h6>
-                </center>
+            </center>
+        </div>
+        <div class="thumbnail">
+            <img class="thumbImage" src="@Url.Action("GetImage", "Home", new {@item.filesTable.id})" alt="">
+            <span class="itemOwner"><h6>@Html.DisplayFor(modelItem => item.filesTable.userName)</h6></span>
+            <div class="btn-group float-right moreItemActions">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li>@Html.ActionLink("View on page", "LargeView", "Home", new {@item.filesTable.id}, new {@class = "largeViewLink"})</li>
+                    <li><a href="#" document-id="@item.filesTable.id" class="deleteSharedDoc" role="button">Delete from inbox</a></li>
+                </ul>
             </div>
-    <div class="thumbnail">
-      <img class="thumbImage" src="@Url.Action("GetImage", "Home" ,new { @item.filesTable.id } )" alt="">
-      <span class="itemOwner"><h6>@Html.DisplayFor(modelItem => item.filesTable.userName)</h6></span>
-          <div class="btn-group float-right moreItemActions">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li>@Html.ActionLink("View on page", "LargeView", "Home", new { @item.filesTable.id }, new { @class = "largeViewLink" })</li>
-                        <li><a href="#" document-id="@item.filesTable.id" class="deleteSharedDoc" role="button">Delete from inbox</a></li>
-                    </ul>
-                </div>
+        </div>
     </div>
-  </div>
-    
-
-    }
+}

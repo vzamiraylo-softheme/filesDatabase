@@ -1049,7 +1049,7 @@ tr.pager td {
     bottom: 15px;
 }
 
-#grid .thumbnail, #shared_Grid .thumbnail {
+#grid .myContentItem .thumbnail {
     height: 190px;
 }
 
@@ -1082,8 +1082,7 @@ tr.pager td {
 }
 
 .filesCategories {
-    float: right;
-    margin-right: 10px;
+    margin-right: 7px;
 }
 
 .categoryName {
@@ -1182,10 +1181,6 @@ tr.pager td {
     display: none;
 }
 
-#myContent .btn-group {
-    margin-top: 10px;
-}
-
 #myContent #grid .btn-group {
     margin-top: 0;
 }
@@ -1199,7 +1194,7 @@ tr.pager td {
 }
 
 #shareContent {
-    margin: 0 10px;
+    
 }
 
 #shared_Grid {
@@ -1275,4 +1270,104 @@ tr.pager td {
 
 .fancybox-wrap a:hover {
     /*background: none;*/
+}
+
+#actionButtons {
+    margin-top: 10px;
+}
+
+#searchInput {
+    width: 400px;
+    float: left;
+    margin-right: 10px;
+}
+
+.searchUserItem .thumbnail {
+    width: 150px;
+    height: 150px !important;
+    float:left;
+}
+
+.userName_searchTpl {
+    font-size: 18px;
+    margin: 20px;
+}
+
+.subscribe, .unsubscribe {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.viewUserContent {
+    position: absolute;
+    right: 10px;
+    top: 54px;
+}
+
+.userSearchRow {
+    width: 100%;
+    position: relative;
+    margin-bottom: 10px !important;
+}
+
+.searchBody {
+    width: 750px;
+    margin: 0 auto;
+}
+
+#searchButtons {
+    width: 490px;
+    margin: 0 auto;
+}
+
+.newsBody {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.newsItem {
+    width: 100%;
+    position: relative;
+}
+
+.newsItem .thumbnail {
+    max-height: 635px;
+    height: none;
+}
+
+.newsItem .thumbnail img {
+    max-height: 590px;
+    max-width: 590px;
+}
+
+.newsImageWrapper {
+    max-height: 590px;
+    width: 590px;
+    text-align: center;
+}
+
+.newsImageWrapper img {
+    
+}
+
+.newsItem .itemOwner {
+    left: 5px;
+    bottom: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.newsItem .moreItemActions {
+    bottom: 5px;
+    right: 5px;
+}
+
+.newsItemFooter {
+    min-height: 30px;
+}
+
+.loadMore {
+    width: 150px;
+    margin-bottom: 10px !important;
 }

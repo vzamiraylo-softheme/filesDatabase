@@ -194,6 +194,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FilesDatabaseClass1.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\SearchedUser.cs" />
     <Compile Include="Models\UploadFile.cs" />
     <Compile Include="Models\userFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -275,6 +276,7 @@
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <Content Include="Scripts\jquery.fancybox.pack.js" />
     <Content Include="Scripts\jquery.form.js" />
+    <Content Include="Scripts\jquery.subscribe.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js.map">
       <DependentUpon>jquery.unobtrusive-ajax.js</DependentUpon>
     </Content>
@@ -341,6 +343,8 @@
     <Content Include="Views\Home\_shareFileTpl.cshtml" />
     <Content Include="Views\Home\_userSearchShare.cshtml" />
     <Content Include="Views\Home\_AjaxLargeView.cshtml" />
+    <Content Include="Views\Home\_UserSearchTpl.cshtml" />
+    <Content Include="Views\Home\_NewsFileTpl.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

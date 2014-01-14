@@ -43,6 +43,7 @@
 
                 $('#actionButtons #myContentButtons').hide();
                 $('#actionButtons #sharedContentButtons').show();
+                $('#actionButtons #searchButtons').hide();
             },
             error: function () {
                 showMessage("Something went wrong!");
@@ -55,6 +56,26 @@
         GetFilesForCategory(-1);
         $('#actionButtons #myContentButtons').show();
         $('#actionButtons #sharedContentButtons').hide();
+        $('#actionButtons #searchButtons').hide();
+    });
+    
+    $('.newsTab').click(function () {
+        $('#actionButtons #myContentButtons').hide();
+        $('#actionButtons #sharedContentButtons').hide();
+        $('#actionButtons #searchButtons').hide();
+        $('#grid .row').empty();
+        GetNewsAjax(1, 10);
+    });
+
+    $('body').on('click', '.loadMore', function() {
+        GetNewsAjax($('.newsItem').length, 10);
+    });
+
+    $('.searchTab').click(function () {
+        $('#grid .row').empty();
+        $('#actionButtons #myContentButtons').hide();
+        $('#actionButtons #sharedContentButtons').hide();
+        $('#actionButtons #searchButtons').show();
     });
 
     $('body').on('click', '.filesCategories li a.category', function() {
@@ -202,20 +223,39 @@
     });
     
     $('body').on('keyup', '#shareContentWrapper #userShareInput', function () {
-        $.ajax({
-            url: "/Home/UserSearch",
-            type: "POST",
-            data: {
-                type: "share",
-                str: $('#userSection #userShareInput').val()
-            },
-            success: function (data) {
-                $('#userSection #userSearchResult').empty();
-                $('#userSection #userSearchResult').append(data);
-            }
-        });
+        ajaxSearch("userShare", $('#userSection #userShareInput').val());
     });
     
+    $('body').on('keyup', '#searchInput', function () {
+        ajaxSearch("userSearch", $('#searchInput').val());
+    });
+    
+    $('body').on('click', '.searchButton', function () {
+        ajaxSearch("userSearch", $('#searchInput').val());
+    });
+
+    function ajaxSearch(type, str) {
+        $.ajax({
+            url: "/Home/Search",
+            type: "POST",
+            data: {
+                type: type,
+                str: str
+            },
+            success: function (data) {
+                if (type == "userSearch") {
+                    $('#grid .row').empty();
+                    $('#grid .row').append('<div class="searchBody"></div>');
+                    $('#grid .row .searchBody').append(data);
+                }
+                if (type == "userShare") {
+                    $('#userSection #userSearchResult').empty();
+                    $('#userSection #userSearchResult').append(data);
+                }
+            }
+        });
+    }
+
     $('body').on('click', '#avatarUploadContent button.btn-danger', function () {
         $.ajax({
             url: "/Home/DeleteAvatar",
@@ -449,6 +489,27 @@ function showModal(id) {
 function closeModal() {
     $(".modalWindow, #bgShadow").animate({ opacity: 0 }, 400);
     $(".modalWindow, #bgShadow").hide();
+}
+
+function GetNewsAjax(start, offset) {
+    $.ajax({
+        url: "/Home/GetNewsAjax",
+        type: "POST",
+        data: {
+            start: start,
+            offset: offset
+        },
+        success: function (data) {
+            if ($('#grid .row .newsBody').length == 0) {
+                $('#grid .row').append('<div class="newsBody"></div>');
+                $('#grid .row .newsBody').append('<button type="button" class="btn btn-primary loadMore center-block">Load more</button>');
+            }
+            $('#grid .row .loadMore').before(data);
+            if (data.isLast != undefined && data.isLast == true) {
+                $('.loadMore').removeClass('btn-primary').addClass('btn-default').text("No more files");
+            }
+        }
+    });
 }
 
 
