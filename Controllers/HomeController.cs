@@ -27,10 +27,10 @@ namespace filesDatabase.Controllers
         {
             //WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "Id", "Name", autoCreateTables: true);
             //ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+
             UpdateLastSeenOn();
 
-            List<userFile> files = new List<userFile>();
-            return View(files);
+            return View(new List<userFile>());
         }
 
         public void UpdateLastSeenOn()
@@ -132,9 +132,9 @@ namespace filesDatabase.Controllers
                             }
 
                         }
-                        var newFile = (from x in _db.filesTables
-                                       where x.id == newFileId
-                                       select x).FirstOrDefault();
+
+                        var newFile = _db.filesTables.FirstOrDefault(x => x.id == newFileId);
+
                         list.Add(newFile);
                     }
                 }
@@ -148,11 +148,7 @@ namespace filesDatabase.Controllers
         [Authorize]
         public ActionResult LargeView(int id)
         {
-            var file = (from x in _db.filesTables
-                       where x.id == id
-                       select x).ToList();
-
-            return View(GenerateUserFileModels(file));
+            return View(GenerateUserFileModels(_db.filesTables.Where(x => x.id == id).ToList()));
         }
 
         public FileContentResult GetImage(int id)
@@ -165,9 +161,7 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult ajaxLargeView(int id)
         {
-            var file = _db.filesTables.FirstOrDefault(x => x.id == id);
-
-
+            filesTable file = _db.filesTables.FirstOrDefault(x => x.id == id);
             return PartialView("_AjaxLargeView", file);
         }
 
@@ -287,23 +281,23 @@ namespace filesDatabase.Controllers
         {
             List<filesTable> files;
 
-            if (catId != -1)
+            if (catId != -1)//return specified category
             {
                 files = (from x in _db.FileToCategories
                         where x.CatId == catId
                         where x.filesTable.userId == GetUserId()
                         select x.filesTable).ToList();
             }
-            else
+            else //return all files
             {
                 files = (from x in _db.filesTables
                          where x.userId == GetUserId()
                             select x).ToList(); 
             }
 
-            files.OrderByDescending(x => x.id);
+            List<filesTable> reordered = files.OrderByDescending(x => x.uploadTime).ToList();
 
-            return PartialView("_FilesList", GenerateUserFileModels(files));
+            return PartialView("_FilesList", GenerateUserFileModels(reordered));
         }
 
         [HttpPost]
@@ -315,9 +309,9 @@ namespace filesDatabase.Controllers
                          where x.userId == GetUserId()
                          select x).ToList();
 
-            files.OrderByDescending(x => x.id);
+                List<filesTable> reordered = files.OrderByDescending(x => x.uploadTime).ToList();
 
-            return PartialView("_shareFileTpl", GenerateUserFileModels(files));
+                return PartialView("_shareFileTpl", GenerateUserFileModels(reordered));
         }
 
         [HttpPost]
@@ -333,8 +327,6 @@ namespace filesDatabase.Controllers
                             subscriberId = GetUserId()
                         };
                     _db.subscribers.InsertOnSubmit(subscriber);
-                    _db.SubmitChanges();
-                    return Json(new {success = true});
                 }
 
                 if (type == "unsubscribe")
@@ -343,15 +335,14 @@ namespace filesDatabase.Controllers
                         _db.subscribers.FirstOrDefault(
                             x => x.subscriberId == GetUserId() && x.subscribedToId == Int32.Parse(userId));
                     _db.subscribers.DeleteOnSubmit(row);
-                    _db.SubmitChanges();
-                    return Json(new {success = true});
                 }
+                _db.SubmitChanges();
+                return Json(new { success = true });
             }
             catch
             {
                 return Json(new { success = false, message = "Something went wrong" });
             }
-            return Json(new { success = false, message = "Something went wrong" });
         }
 
         [HttpPost]
@@ -363,9 +354,7 @@ namespace filesDatabase.Controllers
 
                     if (str == "")return PartialView("_userSearchShare", users);
 
-                    users = (from x in _db.Users
-                                        where x.userName.Contains(str)
-                                        select x).OrderBy(x => x.userName).ToList();
+                    users = _db.Users.Where(x => x.userName.Contains(str)).OrderBy(x => x.userName).ToList();
 
                     return PartialView("_userSearchShare", users);
                 }
@@ -377,9 +366,7 @@ namespace filesDatabase.Controllers
 
                     if (str == "") return PartialView("_userSearchTpl", users);
 
-                    allUsers = (from x in _db.Users
-                                        where x.userName.Contains(str)
-                                        select x).OrderBy(x => x.userName).ToList();
+                    allUsers = _db.Users.Where(x => x.userName.Contains(str)).OrderBy(x => x.userName).ToList();
 
                     foreach (var user in allUsers)
                     {
@@ -390,7 +377,7 @@ namespace filesDatabase.Controllers
                     return PartialView("_userSearchTpl", users);
                 }
 
-            return PartialView("_userSearchShare", null);
+                return PartialView("_userSearchShare", new List<User>());
         }
 
 
@@ -398,14 +385,8 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult AddNewCategory(string catName)
         {
-            var categories = from x in _db.Categories
-                             where x.UserName == GetUsername()
-                             select x;
-            foreach (var category in categories)
-            {
-                if(category.CatName == catName)
-                    return Json(new { message = "You have the same category name!", result = false });
-            }
+            var categoryNameAlreadyExists = _db.Categories.Where(x => x.UserName == GetUsername()).Any(x => x.CatName == catName);
+            if (categoryNameAlreadyExists) return Json(new { message = "You have the same category name!", result = false });
 
             Category model = new Category
                 {
@@ -414,7 +395,6 @@ namespace filesDatabase.Controllers
                 };
             _db.Categories.InsertOnSubmit(model);
             _db.SubmitChanges();
-
 
             return Json(new {message = " ' " + catName + " ' category created.", result = true});
         }
@@ -428,8 +408,8 @@ namespace filesDatabase.Controllers
                 var fileCats = from s in cat_ids.Split(',') orderby s descending select s;
                 foreach (var fileCat in fileCats)
                 {
-                    bool file = _db.FileToCategories.Where(x => x.Category.UserName == GetUsername()).Any(x => x.CatId == Int32.Parse(fileCat) && x.FileId == file_id);
-                    if(file)continue;
+                    bool associationAlreadyExists = _db.FileToCategories.Where(x => x.Category.UserName == GetUsername()).Any(x => x.CatId == Int32.Parse(fileCat) && x.FileId == file_id);
+                    if (associationAlreadyExists) continue;
 
                     var item = new FileToCategory
                         {
@@ -456,10 +436,7 @@ namespace filesDatabase.Controllers
         {
             try
             {
-                var category = (from x in _db.Categories
-                                where x.Id == id
-                                where x.UserName == GetUsername()
-                                select x).FirstOrDefault();
+                var category = _db.Categories.FirstOrDefault(x => x.Id == id && x.UserName == GetUsername());
                 category.CatName = newName;
                 _db.SubmitChanges();
                 return Json(new { message = "Category name changed.", result = true });
@@ -474,9 +451,7 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult DeleteFile(int id)
         {
-            var file = (from x in _db.filesTables
-                        where x.id == id
-                        select x).FirstOrDefault();
+            var file = _db.filesTables.FirstOrDefault(x => x.id == id);
             if (file != null)
             {
                 _db.filesTables.DeleteOnSubmit(file);
@@ -499,9 +474,8 @@ namespace filesDatabase.Controllers
 
                 return Json(new {message = " File deleted! ", result = true});
             }
-            else{
                 return Json(new { message = " Something went wrong! ", result = false });
-            }
+            
         }
 
         [Authorize]
@@ -510,7 +484,6 @@ namespace filesDatabase.Controllers
         {
             var file = _db.sharedContents.FirstOrDefault(x => x.userId == GetUserId() && x.fileId == id);
             _db.sharedContents.DeleteOnSubmit(file);
-
             _db.SubmitChanges();
 
             return Json(new { message = " File deleted! ", result = true });
@@ -521,9 +494,7 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult DeleteCategory(int id)
         {
-            var category = (from x in _db.Categories
-                        where x.Id == id
-                        select x).FirstOrDefault();
+            var category = _db.Categories.FirstOrDefault(x => x.Id == id);
             if (category != null)
             {
                 _db.Categories.DeleteOnSubmit(category);
@@ -536,10 +507,7 @@ namespace filesDatabase.Controllers
                 return Json(new { message = " Something went wrong! ", result = false });
                 
             }
-            else
-            {
                 return Json(new { message = " Something went wrong! ", result = false });
-            }
         }
 
         [Authorize]
@@ -548,12 +516,8 @@ namespace filesDatabase.Controllers
         {
             try
             {
-                var file = (from x in _db.FileToCategories
-                           where x.CatId == cat_id
-                           where x.FileId == doc_id
-                           select x).FirstOrDefault();
-                    _db.FileToCategories.DeleteOnSubmit(file);
-
+                var file = _db.FileToCategories.FirstOrDefault(x => x.CatId == cat_id && x.FileId == doc_id);
+                _db.FileToCategories.DeleteOnSubmit(file);
                 _db.SubmitChanges();
 
                 return Json(new {message = " File deleted from this category! ", result = true});
@@ -569,9 +533,8 @@ namespace filesDatabase.Controllers
         {
             try
             {
-                var files = from x in _db.FileToCategories
-                            where x.CatId == id
-                            select x;
+
+                var files = _db.FileToCategories.Where(x => x.CatId == id).ToList();
                 foreach (var file in files)
                 {
                    _db.FileToCategories.DeleteOnSubmit(file);
@@ -590,11 +553,11 @@ namespace filesDatabase.Controllers
         [HttpPost]
         public ActionResult GetSharedContent()
         {
-            var currentUserId = _db.Users.Where(x => x.userName == GetUsername()).Select(x => x.userID).FirstOrDefault();
 
-            var files = (from x in _db.sharedContents
-                         where x.userId == currentUserId
-                         select x).OrderByDescending(x => x.Id).ToList();
+            var files =
+                _db.sharedContents.Where(x => x.userId == GetUserId())
+                   .OrderByDescending(x => x.filesTable.uploadTime)
+                   .ToList();
 
             return PartialView("_SharedList", files);
         }
