@@ -183,7 +183,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LargeViewController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\ShareController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -336,18 +342,21 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Home\_FilesList.cshtml" />
-    <Content Include="Views\Home\LargeView.cshtml" />
-    <Content Include="Views\Home\_SharedList.cshtml" />
+    <Content Include="Views\Shared\_FilesList.cshtml" />
+    <Content Include="Views\LargeView\LargeView.cshtml" />
+    <Content Include="Views\Share\_SharedList.cshtml" />
     <Content Include="Views\Home\_Modals.cshtml" />
-    <Content Include="Views\Home\_shareFileTpl.cshtml" />
-    <Content Include="Views\Home\_userSearchShare.cshtml" />
-    <Content Include="Views\Home\_AjaxLargeView.cshtml" />
+    <Content Include="Views\Share\_shareFileTpl.cshtml" />
+    <Content Include="Views\Shared\_userSearchShare.cshtml" />
+    <Content Include="Views\LargeView\_AjaxLargeView.cshtml" />
     <Content Include="Views\Home\_UserSearchTpl.cshtml" />
-    <Content Include="Views\Home\_NewsFileTpl.cshtml" />
+    <Content Include="Views\News\_NewsFileTpl.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Categories\" />
+    <Folder Include="Views\File\" />
+    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

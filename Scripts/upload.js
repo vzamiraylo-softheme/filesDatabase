@@ -39,7 +39,7 @@
 function getCategoriesList(target) {
     
     $.ajax({
-        url: "/Home/GetCategories",
+        url: "/Categories/GetCategories",
         type: "POST",
         success: function (data) {
 

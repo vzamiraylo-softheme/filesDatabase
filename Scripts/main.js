@@ -12,7 +12,7 @@
     $('body').on('click', '.itemCaptionHover', function () {
         //$(this).closest('.item').find('.fancybox').trigger('click');
         $.ajax({
-            url: "/Home/ajaxLargeView",
+            url: "/LargeView/ajaxLargeView",
             type: "POST",
             data : {
                 id : $(this).attr('document-id')
@@ -35,7 +35,7 @@
 
     $('.sharedContent, #RefreshShared').click(function () {
         $.ajax({
-            url: "/Home/GetSharedContent",
+            url: "/Share/GetSharedContent",
             type: "POST",
             success: function (data) {
                 $('#grid .row').empty();
@@ -111,7 +111,7 @@
 
     $('body').on('click', '#shareContent', function () {
         $.ajax({
-            url: "/Home/GetThumbsForShare",
+            url: "/Share/GetThumbsForShare",
             type: "POST",
             data: {
                 id : -1
@@ -122,7 +122,7 @@
             }
         });
         $.ajax({
-            url: "/Home/UserSearch",
+            url: "/User/UserSearch",
             type: "POST",
             data: {
                 type: "share",
@@ -147,7 +147,7 @@
         });
 
         $.ajax({
-            url: "/Home/ShareContent",
+            url: "/Share/ShareContent",
             type: "POST",
             data: {
                 'files' : filesId.join(),
@@ -180,7 +180,7 @@
     {
         if (confirm("Are you sure to delete all your content? (Files, Groups)")) {
             $.ajax({
-                url: "/Home/deleteAllFiles",
+                url: "/File/deleteAllFiles",
                 type: "POST",
                 success: function (data) {
                     if (data.result) {
@@ -196,7 +196,7 @@
     $('#deleteAllSharedButton').click(function () {
         if (confirm("Are you sure to delete all your content? (Files, Groups)")) {
             $.ajax({
-                url: "/Home/deleteAllSharedFiles",
+                url: "/Share/deleteAllSharedFiles",
                 type: "POST",
                 success: function (data) {
                     if (data.result) {
@@ -258,7 +258,7 @@
 
     $('body').on('click', '#avatarUploadContent button.btn-danger', function () {
         $.ajax({
-            url: "/Home/DeleteAvatar",
+            url: "/User/DeleteAvatar",
             type: "POST",
             success: function (data) {
                 if (data.result) {
@@ -283,7 +283,7 @@
 
     $('#addNewCatButton').click(function() {
         $.ajax({
-            url: "/Home/AddNewCategory",
+            url: "/Categories/AddNewCategory",
             type: "POST",
             data: {
                 catName: $('#addNewCatWrapper input#catName').val()
@@ -301,7 +301,7 @@
         var item = $(this).closest('.item');
         if(confirm("Are you sure?")){
         $.ajax({
-            url: "/Home/DeleteFile",
+            url: "/File/DeleteFile",
             type: "POST",
             data: {
                 id: $(this).attr('document-id')
@@ -323,7 +323,7 @@
         var item = $(this).closest('.item');
         if (confirm("Are you sure?")) {
             $.ajax({
-                url: "/Home/DeleteSharedFile",
+                url: "/Share/DeleteSharedFile",
                 type: "POST",
                 data: {
                     id: $(this).attr('document-id')
@@ -338,7 +338,7 @@
     
     $('body').on('click', '#addCatToFile', function () {
             $.ajax({
-                url: "/Home/AddCategoriesToFile",
+                url: "/Categories/AddCategoriesToFile",
                 type: "POST",
                 data: {
                     cat_ids : $(this).parent().find('input#categories').val(),
@@ -358,7 +358,7 @@
         var target = $(this);
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "/Home/DeleteFileFromCategory",
+                url: "/Categories/DeleteFileFromCategory",
                 type: "POST",
                 data: {
                     cat_id : target.attr('cat-id'),
@@ -378,7 +378,7 @@
         var target = $(this);
         if (confirm('Are you sure want to delete ' + $(this).parent().find('a').text() + ' category?')) {
             $.ajax({
-                url: "/Home/DeleteCategory",
+                url: "/Categories/DeleteCategory",
                 type: "POST",
                 data: {
                     id: target.parent().find('a').attr('category-id')
@@ -397,7 +397,7 @@
     $('body').on('click', '#renameCatButton', function () {
         var targetId = $(this).attr('category-id');
             $.ajax({
-                url: "/Home/RenameCategory",
+                url: "/Categories/RenameCategory",
                 type: "POST",
                 data: {
                     id: targetId,
@@ -421,7 +421,7 @@
 
 function GetFilesForCategory(id) {
     $.ajax({
-        url: "/Home/GetChannelByCategory",
+        url: "/Categories/GetChannelByCategory",
         type: "POST",
         data: {
             catId: id
@@ -442,7 +442,7 @@ function GetCategories() {
     $(".filesCategories ul").empty();
 
     $.ajax({
-        url: "/Home/GetCategories",
+        url: "/Categories/GetCategories",
         type: "POST",
         beforeSend: function () {
             $(".filesCategories ul").append('<li><a class="borderBottom category selected" category-id="-1" href="#">All</a></li>');
@@ -468,7 +468,7 @@ function showMessage(message) {
 function refreshGrid() {
     var category = $('.filesCategories .selected').attr('category-id');
     $.ajax({
-        url: "/Home/GetChannelByCategory",
+        url: "/Categories/GetChannelByCategory",
         type: "POST",
         data: {
             catId: category ? category : -1
@@ -493,7 +493,7 @@ function closeModal() {
 
 function GetNewsAjax(start, offset) {
     $.ajax({
-        url: "/Home/GetNewsAjax",
+        url: "/News/GetNewsAjax",
         type: "POST",
         data: {
             start: start,
